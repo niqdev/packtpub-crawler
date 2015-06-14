@@ -11,7 +11,7 @@
 var connect = require('connect');
 var serveStatic = require('serve-static');
 
-var PATH = __dirname + '/public';
+var PATH = __dirname + '/public-dev';
 var PORT = 8080;
 
 connect().use(serveStatic(PATH)).listen(PORT, function() {
