@@ -8,12 +8,18 @@
   node server.js
 */
 
-var connect = require('connect');
+var express = require('express');
+var morgan = require('morgan');
 var serveStatic = require('serve-static');
 
 var PATH = __dirname + '/public-dev';
 var PORT = 8080;
 
-connect().use(serveStatic(PATH)).listen(PORT, function() {
+var app = express();
+
+// logger
+app.use(morgan('dev'));
+
+app.use(serveStatic(PATH)).listen(PORT, function() {
   console.log("listening on port " + PORT);
 });

@@ -7,7 +7,8 @@
     "url": "https://github.com/niqdev/packtpub-crawler.git"
   },
   "dependencies": {
-    "connect": "^3.3.5",
+    "express": "^4.12.4",
+    "morgan": "^1.6.0",
     "serve-static": "^1.9.3"
   }
 }
