@@ -15,25 +15,24 @@ python spider.py -h
 '''
 
 import argparse
-import ConfigParser
-from utils import *
+from packtpub import Packpub
+from utils import current_ip_address
+from logs import *
 
 def do_login():
     login_soup = make_soup(BASE_DEV_URL + LOGIN_DEV_URL, DELAY_REQUEST)
 
 def parse_environment(param):
     """
-    Parse environment: default is development
+    Parse environment parameter: default is development
     """
-    environment = 'config/dev.cfg'
+    path = 'config/dev.cfg'
 
     if param and param.strip() == 'prod':
-        environment = 'config/prod.cfg'
+        path = 'config/prod.cfg'
 
-    log_info('[*] init environment: ' + environment)
-    
-    config = ConfigParser.ConfigParser()
-    return config.read(environment)
+    log_info('[*] config environment path: ' + path)
+    return path
 
 def main():
     parser = argparse.ArgumentParser(description='Download FREE eBook every day from www.packtpub.com', version='0.1')
@@ -41,14 +40,16 @@ def main():
     args = parser.parse_args()
 
     try:
-        config = parse_environment(args.environment)
+        environment_path = parse_environment(args.environment)
         #current_ip_address()
-        #do_login()
+
+        packpub = Packpub(environment_path)
+        packpub.login()
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
     except Exception as e:
-        log_warn('[-] {0}'.format(e))
+        log_debug(e)
         log_error('[-] something weird occurred, exiting...')
 
 if __name__ == '__main__':

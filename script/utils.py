@@ -1,20 +1,7 @@
-from termcolor import cprint
-import json
 import requests
 from requests.exceptions import ConnectionError
 from bs4 import BeautifulSoup
 from time import sleep
-
-def log_error(message):
-    cprint(message, 'red')
-def log_warn(message):
-    cprint(message, 'yellow')
-def log_info(message):
-    cprint(message, 'cyan')
-def log_success(message):
-    cprint(message, 'green')
-def log_json(list_dict):
-    print json.dumps(list_dict, indent=2)
 
 def current_ip_address():
     """
@@ -30,7 +17,7 @@ def current_ip_address():
         log_error('[-] error internet connection, exiting...')
         exit(0)
 
-def make_soup(url, delay):
+def make_soup(url, delay=0, debug=False):
     """
     Makes soup from url
     """
@@ -45,7 +32,10 @@ def make_soup(url, delay):
 
         print '[*] fetching url... {0} | {1}'.format(response.status_code, response.url)
         soup = BeautifulSoup(response.text, from_encoding=response.encoding)
-        #print soup.prettify().encode('utf-8')
+
+        if debug:
+            print soup.prettify().encode('utf-8')
+        
         sleep(delay)
 
     except ConnectionError, e:
