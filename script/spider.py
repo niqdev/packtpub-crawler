@@ -15,12 +15,9 @@ python spider.py -h
 '''
 
 import argparse
-from packtpub import Packpub
 from utils import current_ip_address
+from packtpub import Packpub
 from logs import *
-
-def do_login():
-    login_soup = make_soup(BASE_DEV_URL + LOGIN_DEV_URL, DELAY_REQUEST)
 
 def parse_environment(param):
     """
@@ -36,7 +33,7 @@ def parse_environment(param):
 
 def main():
     parser = argparse.ArgumentParser(description='Download FREE eBook every day from www.packtpub.com', version='0.1')
-    parser.add_argument('-e', '--environment', dest='environment', default='dev', help='configuration environment')
+    parser.add_argument('-e', '--environment', dest='environment', default='dev', help='configure environment: dev|prod')
     args = parser.parse_args()
 
     try:
