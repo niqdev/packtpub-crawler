@@ -17,32 +17,18 @@ def current_ip_address():
         log_error('[-] error internet connection, exiting...')
         exit(0)
 
-def make_soup(url, delay=0, debug=False):
+def make_soup(response, debug=False):
     """
-    Makes soup from url
+    Make soup from response
     """
 
-    soup = None
-    try:
-        headers = {
-            #latest version of chrome
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
-        }
-        response = requests.get(url, headers=headers)
+    print '[*] fetching url... {0} | {1}'.format(response.status_code, response.url)
+    soup = BeautifulSoup(response.text, from_encoding=response.encoding)
+    if debug:
+        print soup.prettify().encode('utf-8')
+    return soup
 
-        print '[*] fetching url... {0} | {1}'.format(response.status_code, response.url)
-        soup = BeautifulSoup(response.text, from_encoding=response.encoding)
-
-        if debug:
-            print soup.prettify().encode('utf-8')
-        
+def wait(delay):
+    if delay > 0:
+        print '[-] going to sleep {0} seconds'.format(delay)
         sleep(delay)
-
-    except ConnectionError, e:
-        log_warn('[-] {0}'.format(e))
-
-    if soup is None:
-        log_error('[-] error while making soup, exiting...')
-        exit(0)
-    else:
-        return soup

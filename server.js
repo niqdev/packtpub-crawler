@@ -1,7 +1,7 @@
 /*
   // setup project
   npm init
-  npm install connect serve-static --save
+  // build
   npm install
 
   // run dev

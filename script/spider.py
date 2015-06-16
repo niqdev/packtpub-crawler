@@ -1,4 +1,4 @@
-'''
+"""
 // setup environment
 sudo easy_install pip
 
@@ -8,11 +8,12 @@ pip freeze
 sudo pip install termcolor
 sudo pip install beautifulsoup4
 sudo pip install requests
+sudo pip install requests[security]
 
 // run
 python spider.py
 python spider.py -h
-'''
+"""
 
 import argparse
 from utils import current_ip_address
@@ -41,7 +42,7 @@ def main():
         #current_ip_address()
 
         packpub = Packpub(environment_path)
-        packpub.login()
+        packpub.download_pdf()
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
