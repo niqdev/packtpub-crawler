@@ -13,9 +13,13 @@ def log_info(message):
 
 def log_success(message):
     cprint(message, 'green')
-    
+
 def log_json(list_dict):
     print json.dumps(list_dict, indent=2)
+
+def log_dict(dict):
+    for key, elem in dict.items():
+        print '\t[{0}] {1}'.format(key, elem)
 
 def log_debug(e, stacktrace=True):
     exc_type, exc_value, exc_traceback = sys.exc_info()
