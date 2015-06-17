@@ -12,6 +12,7 @@ class Packpub(object):
     def __init__(self, path):
         self.__config = self.__init_config(path)
         self.__delay = float(self.__config.get('delay', 'delay.requests'))
+        self.__url_base = self.__config.get('url', 'url.base')
         self.__headers = self.__init_headers()
         self.__session = requests.Session()
 
@@ -28,50 +29,44 @@ class Packpub(object):
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
         }
 
-    def __parse_GET_login(self, soup):
-        form = soup.find('form', {'id': 'packt-user-login-form'})
-        #print form.find_all('input', attrs={'name': 'form_build_id'}, limit=1)[0]['value']
-        #print form.find('input', attrs={'name': 'form_build_id'})['value']
-        #print form.find('input', attrs={'name': 'form_id'})['value']
+    def __GET_login(self):
+        url = self.__url_base + self.__config.get('url', 'url.loginGet')
 
-        data = {
-            'email': self.__config.get('credential', 'credential.email'),
-            'password': self.__config.get('credential', 'credential.password'),
-            'op': 'Login',
+        response = self.__session.get(url, headers=self.__headers)
+        print '[-] GET {0} | {1}'.format(response.url, response.status_code)
+
+        soup = make_soup(response)
+        form = soup.find('form', {'id': 'packt-user-login-form'})
+        payload = {
             'form_build_id': form.find('input', attrs={'name': 'form_build_id'})['value'],
             'form_id': form.find('input', attrs={'name': 'form_id'})['value'],
         }
-        #print '[-] data: {0}'.format(urllib.urlencode(data))
-        return data
+        return payload
 
-    def __parse_POST_login(self, soup):
-        print 'TODO'
+    def __POST_login(self, data):
 
-    def __login(self):
-        """
-        """
-        base_url = self.__config.get('url', 'url.base')
+        data['email'] = self.__config.get('credential', 'credential.email')
+        data['password'] = self.__config.get('credential', 'credential.password')
+        data['op'] = 'Login'
+        print '[-] data: {0}'.format(urllib.urlencode(data))
 
-        GET_url = base_url + self.__config.get('url', 'url.loginGet')
-        GET_login_res = self.__session.get(GET_url, headers=self.__headers)
-        print '[-] GET {0} | {1}'.format(GET_login_res.url, GET_login_res.status_code)
-        GET_soup = make_soup(GET_login_res)
-        GET_data = self.__parse_GET_login(GET_soup)
+        url = self.__url_base + self.__config.get('url', 'url.loginPost')
 
-        wait(self.__delay)
-        POST_url = base_url + self.__config.get('url', 'url.loginPost')
         # TODO in dev use GET instead of POST
-        POST_login_res = self.__session.get(POST_url, headers=self.__headers, data=GET_data)
-        print '[-] POST {0} | {1}'.format(POST_login_res.url, POST_login_res.status_code)
-        POST_soup = make_soup(POST_login_res, True)
-        POST_data = self.__parse_POST_login(POST_soup)
-
+        response = self.__session.get(url, headers=self.__headers, data=data)
+        print '[-] POST {0} | {1}'.format(response.url, response.status_code)
         print '[-] cookies:'
         log_dict(requests.utils.dict_from_cookiejar(self.__session.cookies))
         print '[-] headers:'
-        log_dict(POST_login_res.headers)
+        log_dict(response.headers)
 
-    def download_pdf(self):
+        soup = make_soup(response, True)
+
+        # TODO continue
+        payload = {}
+        return payload
+
+    def run(self):
         """
         https://www.packtpub.com/packt/offers/free-learning
         GET login
@@ -88,5 +83,6 @@ class Packpub(object):
         DOWNLOAD source (if exists)
         """
 
-        log_success("TODO downloading PDF")
-        self.__login()
+        GET_payload = self.__GET_login()
+        wait(self.__delay)
+        POST_payload = self.__POST_login(GET_payload)

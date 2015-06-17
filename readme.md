@@ -2,7 +2,7 @@
 
 > work in progress...
 
-### Download FREE eBook every day from www.packtpub.com
+### Download FREE eBook every day from [www.packtpub.com](https://www.packtpub.com/packt/offers/free-learning)
 
 This crawler automates the following step:
 

@@ -41,8 +41,7 @@ def main():
         environment_path = parse_environment(args.environment)
         #current_ip_address()
 
-        packpub = Packpub(environment_path)
-        packpub.download_pdf()
+        Packpub(environment_path).run()
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
