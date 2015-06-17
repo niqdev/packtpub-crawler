@@ -44,7 +44,6 @@ class Packpub(object):
         return payload
 
     def __POST_login(self, data):
-
         data['email'] = self.__config.get('credential', 'credential.email')
         data['password'] = self.__config.get('credential', 'credential.password')
         data['op'] = 'Login'
@@ -53,16 +52,36 @@ class Packpub(object):
         url = self.__url_base + self.__config.get('url', 'url.loginPost')
 
         # TODO in dev use GET instead of POST
-        response = self.__session.get(url, headers=self.__headers, data=data)
+        response = self.__session.post(url, headers=self.__headers, data=data)
         print '[-] POST {0} | {1}'.format(response.url, response.status_code)
         print '[-] cookies:'
         log_dict(requests.utils.dict_from_cookiejar(self.__session.cookies))
         print '[-] headers:'
         log_dict(response.headers)
 
-        soup = make_soup(response, True)
+        soup = make_soup(response)
+        div_target = soup.find('div', {'id': 'deal-of-the-day'})
 
-        # TODO continue
+        payload = {
+            'title': div_target.select('div.dotd-title > h2')[0].string,
+            'description': div_target.select('div.dotd-main-book-summary > div')[2].string.strip(),
+            'url_image': div_target.select('div.dotd-main-book-image img')[0]['src'].lstrip('//'),
+            'url_claim': self.__url_base + div_target.select('a.twelve-days-claim')[0]['href']
+        }
+        log_json(payload)
+        return payload
+
+    def __GET_claim(self, data):
+        response = self.__session.get(data['url_claim'], headers=self.__headers)
+        print '[-] GET {0} | {1}'.format(response.url, response.status_code)
+        print '[-] cookies:'
+        log_dict(requests.utils.dict_from_cookiejar(self.__session.cookies))
+        print '[-] headers:'
+        log_dict(response.headers)
+
+        soup = make_soup(response, True)
+        
+        #TODO
         payload = {}
         return payload
 
@@ -74,15 +93,15 @@ class Packpub(object):
 
         // find url
         GET https://www.packtpub.com/freelearning-claim/13539/21478
-        // ??
-        GET https://www.packtpub.com/account/my-ebooks
+        // redirect to https://www.packtpub.com/account/my-ebooks
 
-        GET account
         DOWNLOAD info (title/description/image)
         DOWNLOAD pdf
         DOWNLOAD source (if exists)
         """
 
-        GET_payload = self.__GET_login()
+        GET_login_payload = self.__GET_login()
         wait(self.__delay)
-        POST_payload = self.__POST_login(GET_payload)
+        POST_login_payload = self.__POST_login(GET_login_payload)
+        wait(self.__delay)
+        self.__GET_claim(POST_payload)
