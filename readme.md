@@ -1,5 +1,7 @@
 # packtpub-crawler
 
+> work in progress...
+
 ### Download FREE eBook every day from www.packtpub.com
 
 This crawler automates the following step:
@@ -21,11 +23,11 @@ and test the crawler with
 python spider.py
 ```
 
-Note that to run test using POST you need to change all **requests.post** with **requests.get** because are served as static pages.
+Note that to run test using POST you need to change all `requests.post` with `requests.get` because dev html pages are served statically.
 
 #### Production
 ```
 python spider.py -e prod
 ```
 
-Note that you need to create **script/config/prod.cfg** with your credential.
+Note that you need to create `script/config/prod.cfg` with your credential, look at `dev.cfg` for reference.
