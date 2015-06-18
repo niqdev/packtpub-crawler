@@ -31,3 +31,13 @@ python spider.py -e prod
 ```
 
 Note that you need to create `script/config/prod.cfg` with your credential, look at `dev.cfg` for reference.
+
+## TODO
+
+* argument type pdf|epub|mobi
+* config better dev|prod only for credential, missing urls
+* refactor download file, add missing type
+* download image
+* store info in csv or MongoDB
+* upload file to Drive
+* send confirmation email

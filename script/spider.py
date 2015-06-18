@@ -36,6 +36,8 @@ def parse_environment(param):
 def main():
     parser = argparse.ArgumentParser(description='Download FREE eBook every day from www.packtpub.com', version='0.1')
     parser.add_argument('-e', '--environment', dest='environment', default='dev', help='configure environment: dev|prod')
+
+    # TODO argument pdf|epub|mobi
     args = parser.parse_args()
 
     try:
