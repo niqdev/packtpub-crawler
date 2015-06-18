@@ -23,7 +23,7 @@ and test the crawler with
 python spider.py
 ```
 
-Note that to run test using POST you need to change all `requests.post` with `requests.get` because dev html pages are served statically.
+Note that in order to run in development mode you need to swap comment *ONLY-DEV* in `script/packtpub.py` because html pages are served statically.
 
 #### Production
 ```

@@ -3,6 +3,7 @@ import urllib
 import requests
 from utils import make_soup
 from utils import wait
+from utils import download_file
 from logs import *
 
 class Packpub(object):
@@ -29,11 +30,19 @@ class Packpub(object):
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
         }
 
+    def __log_response(self, response, method='GET', detail=False):
+        print '[-] {0} {1} | {2}'.format(method, response.url, response.status_code)
+        if detail:
+            print '[-] cookies:'
+            log_dict(requests.utils.dict_from_cookiejar(self.__session.cookies))
+            print '[-] headers:'
+            log_dict(response.headers)
+
     def __GET_login(self):
         url = self.__url_base + self.__config.get('url', 'url.loginGet')
 
         response = self.__session.get(url, headers=self.__headers)
-        print '[-] GET {0} | {1}'.format(response.url, response.status_code)
+        self.__log_response(response)
 
         soup = make_soup(response)
         form = soup.find('form', {'id': 'packt-user-login-form'})
@@ -47,23 +56,20 @@ class Packpub(object):
         data['email'] = self.__config.get('credential', 'credential.email')
         data['password'] = self.__config.get('credential', 'credential.password')
         data['op'] = 'Login'
-        print '[-] data: {0}'.format(urllib.urlencode(data))
+        #print '[-] data: {0}'.format(urllib.urlencode(data))
 
         url = self.__url_base + self.__config.get('url', 'url.loginPost')
 
-        # TODO in dev use GET instead of POST
+        # ONLY-DEV: use GET instead of POST
+        #response = self.__session.get(url, headers=self.__headers, data=data)
         response = self.__session.post(url, headers=self.__headers, data=data)
-        print '[-] POST {0} | {1}'.format(response.url, response.status_code)
-        print '[-] cookies:'
-        log_dict(requests.utils.dict_from_cookiejar(self.__session.cookies))
-        print '[-] headers:'
-        log_dict(response.headers)
+        self.__log_response(response, 'POST', True)
 
         soup = make_soup(response)
         div_target = soup.find('div', {'id': 'deal-of-the-day'})
 
         payload = {
-            'title': div_target.select('div.dotd-title > h2')[0].string,
+            'title': div_target.select('div.dotd-title > h2')[0].string.strip(),
             'description': div_target.select('div.dotd-main-book-summary > div')[2].string.strip(),
             'url_image': div_target.select('div.dotd-main-book-image img')[0]['src'].lstrip('//'),
             'url_claim': self.__url_base + div_target.select('a.twelve-days-claim')[0]['href']
@@ -72,36 +78,40 @@ class Packpub(object):
         return payload
 
     def __GET_claim(self, data):
+        # ONLY-DEV: use url.account
+        #url_dev = self.__url_base + self.__config.get('url', 'url.account')
+        #response = self.__session.get(url_dev, headers=self.__headers)
         response = self.__session.get(data['url_claim'], headers=self.__headers)
-        print '[-] GET {0} | {1}'.format(response.url, response.status_code)
-        print '[-] cookies:'
-        log_dict(requests.utils.dict_from_cookiejar(self.__session.cookies))
-        print '[-] headers:'
-        log_dict(response.headers)
+        self.__log_response(response)
 
-        soup = make_soup(response, True)
-        
-        #TODO
-        payload = {}
+        soup = make_soup(response)
+        div_target = soup.find('div', {'id': 'product-account-list'})
+
+        book_id = div_target.select('.product-line')[0]['nid']
+
+        # only last one just claimed
+        payload = {
+            'book_id' : book_id,
+            'author': div_target.find(class_='author').text.strip(),
+            'url_pdf' : self.__url_base + '/ebook_download/{0}/pdf'.format(book_id),
+            'url_epub' : self.__url_base + '/ebook_download/{0}/epub'.format(book_id),
+            'url_mobi' : self.__url_base + '/ebook_download/{0}/mobi'.format(book_id),
+        }
+        log_json(payload)
         return payload
+
 
     def run(self):
         """
-        https://www.packtpub.com/packt/offers/free-learning
-        GET login
-        POST login
-
-        // find url
-        GET https://www.packtpub.com/freelearning-claim/13539/21478
-        // redirect to https://www.packtpub.com/account/my-ebooks
-
-        DOWNLOAD info (title/description/image)
-        DOWNLOAD pdf
-        DOWNLOAD source (if exists)
         """
 
         GET_login_payload = self.__GET_login()
         wait(self.__delay)
         POST_login_payload = self.__POST_login(GET_login_payload)
         wait(self.__delay)
-        self.__GET_claim(POST_payload)
+        GET_claim_payload = self.__GET_claim(POST_login_payload)
+
+        # TODO refactor
+        directory = self.__config.get('path', 'path.ebooks')
+        filename = POST_login_payload['title'] + '.pdf'
+        download_file(self.__session, GET_claim_payload['url_pdf'], directory, filename)

@@ -11,4 +11,5 @@ node_modules/
 script/config/prod.cfg
 
 #download folder
-pdf/
+ebooks/
+images/

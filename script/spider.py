@@ -12,6 +12,7 @@ sudo pip install requests[security]
 
 // run
 python spider.py
+python spider.py -e prod
 python spider.py -h
 """
 
