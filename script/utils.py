@@ -3,6 +3,7 @@ from requests.exceptions import ConnectionError
 from bs4 import BeautifulSoup
 from time import sleep
 import os
+from clint.textui import progress
 
 def current_ip_address():
     """
@@ -35,18 +36,23 @@ def wait(delay):
         sleep(delay)
 
 def download_file(r, url, directory,  filename):
+    """
+    Downloads file with progress bar
+    """
     if not os.path.exists(directory):
         #creates directories recursively
         os.makedirs(directory)
         print '[+] created new directory: ' + directory
 
+    filename = filename.encode('ascii', 'ignore').replace(' ', '_')
     path = os.path.join(directory, filename)
 
-    print '[+] downloading image from url: {0}'.format(url)
+    print '[-] downloading file from url: {0}'.format(url)
     response = r.get(url, stream=True)
-
     with open(path, 'wb') as f:
-        for chunk in response.iter_content(chunk_size=1024):
+        total_length = int(response.headers.get('content-length'))
+        for chunk in progress.bar(response.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1):
             if chunk:
                 f.write(chunk)
                 f.flush()
+    print '[+] new download: {0}'.format(path)

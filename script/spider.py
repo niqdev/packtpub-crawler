@@ -9,6 +9,7 @@ sudo pip install termcolor
 sudo pip install beautifulsoup4
 sudo pip install requests
 sudo pip install requests[security]
+sudo pip install clint
 
 // run
 python spider.py

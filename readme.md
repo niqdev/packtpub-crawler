@@ -37,7 +37,7 @@ Note that you need to create `script/config/prod.cfg` with your credential, look
 * argument type pdf|epub|mobi
 * config better dev|prod only for credential, missing urls
 * refactor download file, add missing type
-* download image
+* download image and source code if exists
 * store info in csv or MongoDB
-* upload file to Drive
-* send confirmation email
+* upload file to Google Drive
+* send confirmation email (html template)
