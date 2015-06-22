@@ -1,26 +1,20 @@
-import ConfigParser
 import urllib
 import requests
-from utils import make_soup
-from utils import wait
-from utils import download_file
+from utils import make_soup, wait, download_file
 from logs import *
 
 class Packpub(object):
     """
     """
 
-    def __init__(self, path):
-        self.__config = self.__init_config(path)
+    def __init__(self, config, dev):
+        self.__config = config
+        self.__dev = dev
         self.__delay = float(self.__config.get('delay', 'delay.requests'))
         self.__url_base = self.__config.get('url', 'url.base')
         self.__headers = self.__init_headers()
         self.__session = requests.Session()
-
-    def __init_config(self, path):
-        config = ConfigParser.ConfigParser()
-        config.read(path)
-        return config
+        self.info = {}
 
     def __init_headers(self):
         return {
@@ -39,79 +33,82 @@ class Packpub(object):
             log_dict(response.headers)
 
     def __GET_login(self):
-        url = self.__url_base + self.__config.get('url', 'url.loginGet')
+        url = self.__url_base
+        if self.__dev:
+            url += self.__config.get('url', 'url.loginGet')
+        else:
+            url += self.__config.get('url', 'url.login')
 
         response = self.__session.get(url, headers=self.__headers)
         self.__log_response(response)
 
         soup = make_soup(response)
         form = soup.find('form', {'id': 'packt-user-login-form'})
-        payload = {
-            'form_build_id': form.find('input', attrs={'name': 'form_build_id'})['value'],
-            'form_id': form.find('input', attrs={'name': 'form_id'})['value'],
-        }
-        return payload
+        self.info['form_build_id'] = form.find('input', attrs={'name': 'form_build_id'})['value']
+        self.info['form_id'] = form.find('input', attrs={'name': 'form_id'})['value']
+        wait(self.__delay)
 
-    def __POST_login(self, data):
+    def __POST_login(self):
+        data = self.info.copy()
         data['email'] = self.__config.get('credential', 'credential.email')
         data['password'] = self.__config.get('credential', 'credential.password')
         data['op'] = 'Login'
         #print '[-] data: {0}'.format(urllib.urlencode(data))
 
-        url = self.__url_base + self.__config.get('url', 'url.loginPost')
+        url = self.__url_base
+        response = None
+        if self.__dev:
+            url += self.__config.get('url', 'url.loginPost')
+            response = self.__session.get(url, headers=self.__headers, data=data)
+        else:
+            url += self.__config.get('url', 'url.login')
+            response = self.__session.post(url, headers=self.__headers, data=data)
 
-        # ONLY-DEV: use GET instead of POST
-        #response = self.__session.get(url, headers=self.__headers, data=data)
-        response = self.__session.post(url, headers=self.__headers, data=data)
         self.__log_response(response, 'POST', True)
 
         soup = make_soup(response)
         div_target = soup.find('div', {'id': 'deal-of-the-day'})
 
-        payload = {
-            'title': div_target.select('div.dotd-title > h2')[0].string.strip(),
-            'description': div_target.select('div.dotd-main-book-summary > div')[2].string.strip(),
-            'url_image': div_target.select('div.dotd-main-book-image img')[0]['src'].lstrip('//'),
-            'url_claim': self.__url_base + div_target.select('a.twelve-days-claim')[0]['href']
-        }
-        log_json(payload)
-        return payload
+        self.info['title'] = div_target.select('div.dotd-title > h2')[0].string.strip()
+        self.info['description'] = div_target.select('div.dotd-main-book-summary > div')[2].string.strip()
+        self.info['url_image'] = div_target.select('div.dotd-main-book-image img')[0]['src'].lstrip('//')
+        self.info['url_claim'] = self.__url_base + div_target.select('a.twelve-days-claim')[0]['href']
+        # remove useless info
+        self.info.pop('form_build_id', None)
+        self.info.pop('form_id', None)
+        wait(self.__delay)
 
-    def __GET_claim(self, data):
-        # ONLY-DEV: use url.account
-        #url_dev = self.__url_base + self.__config.get('url', 'url.account')
-        #response = self.__session.get(url_dev, headers=self.__headers)
-        response = self.__session.get(data['url_claim'], headers=self.__headers)
+    def __GET_claim(self):
+        url = ''
+        if self.__dev:
+            url = self.__url_base + self.__config.get('url', 'url.account')
+        else:
+            url = self.info['url_claim']
+
+        response = self.__session.get(url, headers=self.__headers)
         self.__log_response(response)
 
         soup = make_soup(response)
         div_target = soup.find('div', {'id': 'product-account-list'})
 
-        book_id = div_target.select('.product-line')[0]['nid']
-
         # only last one just claimed
-        payload = {
-            'book_id' : book_id,
-            'author': div_target.find(class_='author').text.strip(),
-            'url_pdf' : self.__url_base + '/ebook_download/{0}/pdf'.format(book_id),
-            'url_epub' : self.__url_base + '/ebook_download/{0}/epub'.format(book_id),
-            'url_mobi' : self.__url_base + '/ebook_download/{0}/mobi'.format(book_id),
-        }
-        log_json(payload)
-        return payload
-
-
-    def run(self):
-        """
-        """
-
-        GET_login_payload = self.__GET_login()
+        self.info['book_id'] = div_target.select('.product-line')[0]['nid']
+        self.info['author'] = div_target.find(class_='author').text.strip()
         wait(self.__delay)
-        POST_login_payload = self.__POST_login(GET_login_payload)
-        wait(self.__delay)
-        GET_claim_payload = self.__GET_claim(POST_login_payload)
 
-        # TODO refactor
+    def download_ebooks(self, types):
+
+        self.__GET_login()
+        self.__POST_login()
+        self.__GET_claim()
+
+        log_json(self.info)
+
+        download_urls = [dict(type=type, \
+            url=self.__url_base + self.__config.get('url', 'url.download').format(self.info['book_id'], type), \
+            filename=self.info['title'].encode('ascii', 'ignore').replace(' ', '_') + '.' + type) \
+            for type in types]
+
         directory = self.__config.get('path', 'path.ebooks')
-        filename = POST_login_payload['title'] + '.pdf'
-        download_file(self.__session, GET_claim_payload['url_pdf'], directory, filename)
+        for download in download_urls:
+            download_file(self.__session, download['url'], directory, download['filename'])

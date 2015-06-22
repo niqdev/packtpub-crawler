@@ -1,23 +1,32 @@
 import requests
 from requests.exceptions import ConnectionError
+import ConfigParser
 from bs4 import BeautifulSoup
 from time import sleep
 import os
 from clint.textui import progress
+from logs import *
 
-def current_ip_address():
+def ip_address():
     """
     Gets current IP address
     """
 
-    try:
-        response = requests.get('http://www.ip-addr.es')
-        print '[*] fetching URL... {0} | {1}'.format(response.status_code, response.url)
-        log_success('[+] your current ip address is: {0}'.format(response.text.strip()))
-    except ConnectionError, e:
-        print '[-] {0}'.format(e)
-        log_error('[-] error internet connection, exiting...')
-        exit(0)
+    response = requests.get('http://www.ip-addr.es')
+    print '[-] GET {0} | {1}'.format(response.status_code, response.url)
+    log_info('[+] ip address is: {0}'.format(response.text.strip()))
+
+def config_file(path):
+    """
+    Reads configuration file
+    """
+    if not os.path.exists(path):
+        raise IOError('file not found!')
+
+    log_info('[+] configuration file: {0}'.format(path))
+    config = ConfigParser.ConfigParser()
+    config.read(path)
+    return config
 
 def make_soup(response, debug=False):
     """
@@ -42,7 +51,7 @@ def download_file(r, url, directory,  filename):
     if not os.path.exists(directory):
         #creates directories recursively
         os.makedirs(directory)
-        print '[+] created new directory: ' + directory
+        log_info('[+] created new directory: ' + directory)
 
     filename = filename.encode('ascii', 'ignore').replace(' ', '_')
     path = os.path.join(directory, filename)
@@ -55,4 +64,5 @@ def download_file(r, url, directory,  filename):
             if chunk:
                 f.write(chunk)
                 f.flush()
-    print '[+] new download: {0}'.format(path)
+    log_success('[+] new download: {0}'.format(path))
+    return filename

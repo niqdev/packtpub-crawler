@@ -18,34 +18,39 @@ python spider.py -h
 """
 
 import argparse
-from utils import current_ip_address
+from utils import ip_address, config_file
 from packtpub import Packpub
 from logs import *
 
-def parse_environment(param):
-    """
-    Parse environment parameter: default is development
-    """
-    path = 'config/dev.cfg'
-
-    if param and param.strip() == 'prod':
-        path = 'config/prod.cfg'
-
-    log_info('[*] config environment path: ' + path)
-    return path
+def parse_types(args):
+    if args.types is None:
+        return [args.type]
+    else:
+        return args.types
 
 def main():
-    parser = argparse.ArgumentParser(description='Download FREE eBook every day from www.packtpub.com', version='0.1')
-    parser.add_argument('-e', '--environment', dest='environment', default='dev', help='configure environment: dev|prod')
+    parser = argparse.ArgumentParser(\
+        description='Download FREE eBook every day from www.packtpub.com', \
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter, \
+        version='0.2')
 
-    # TODO argument pdf|epub|mobi
+    parser.add_argument('-c', '--config', required=True, help='configuration file')
+    parser.add_argument('-d', '--dev', action='store_true')
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-t', '--type', choices=['pdf', 'epub', 'mobi'], \
+        default='pdf', help='ebook type')
+    group.add_argument('-a', '--all', dest='types', action='store_const', \
+        const=['pdf', 'epub', 'mobi'])
+
     args = parser.parse_args()
 
     try:
-        environment_path = parse_environment(args.environment)
-        #current_ip_address()
+        #ip_address()
+        config = config_file(args.config)
+        types = parse_types(args)
 
-        Packpub(environment_path).run()
+        Packpub(config, args.dev).download_ebooks(types)
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
