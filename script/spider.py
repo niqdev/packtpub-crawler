@@ -10,6 +10,7 @@ sudo pip install beautifulsoup4
 sudo pip install requests
 sudo pip install requests[security]
 sudo pip install clint
+#sudo pip install PIL- Pillow
 
 // run
 python spider.py
@@ -50,7 +51,7 @@ def main():
         config = config_file(args.config)
         types = parse_types(args)
 
-        Packpub(config, args.dev).download_ebooks(types)
+        Packpub(config, args.dev).download(types)
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')

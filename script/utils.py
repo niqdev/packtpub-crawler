@@ -44,7 +44,7 @@ def wait(delay):
         print '[-] going to sleep {0} seconds'.format(delay)
         sleep(delay)
 
-def download_file(r, url, directory,  filename):
+def download_file(r, url, directory, filename):
     """
     Downloads file with progress bar
     """
@@ -53,7 +53,6 @@ def download_file(r, url, directory,  filename):
         os.makedirs(directory)
         log_info('[+] created new directory: ' + directory)
 
-    filename = filename.encode('ascii', 'ignore').replace(' ', '_')
     path = os.path.join(directory, filename)
 
     print '[-] downloading file from url: {0}'.format(url)
@@ -65,4 +64,3 @@ def download_file(r, url, directory,  filename):
                 f.write(chunk)
                 f.flush()
     log_success('[+] new download: {0}'.format(path))
-    return filename

@@ -1,5 +1,6 @@
 import urllib
 import requests
+import os
 from utils import make_soup, wait, download_file
 from logs import *
 
@@ -71,7 +72,7 @@ class Packpub(object):
 
         self.info['title'] = div_target.select('div.dotd-title > h2')[0].string.strip()
         self.info['description'] = div_target.select('div.dotd-main-book-summary > div')[2].string.strip()
-        self.info['url_image'] = div_target.select('div.dotd-main-book-image img')[0]['src'].lstrip('//')
+        self.info['url_image'] = 'https://' + div_target.select('div.dotd-main-book-image img')[0]['src'].lstrip('//')
         self.info['url_claim'] = self.__url_base + div_target.select('a.twelve-days-claim')[0]['href']
         # remove useless info
         self.info.pop('form_build_id', None)
@@ -96,14 +97,7 @@ class Packpub(object):
         self.info['author'] = div_target.find(class_='author').text.strip()
         wait(self.__delay)
 
-    def download_ebooks(self, types):
-
-        self.__GET_login()
-        self.__POST_login()
-        self.__GET_claim()
-
-        log_json(self.info)
-
+    def __download_ebooks(self, types):
         download_urls = [dict(type=type, \
             url=self.__url_base + self.__config.get('url', 'url.download').format(self.info['book_id'], type), \
             filename=self.info['title'].encode('ascii', 'ignore').replace(' ', '_') + '.' + type) \
@@ -112,3 +106,19 @@ class Packpub(object):
         directory = self.__config.get('path', 'path.ebooks')
         for download in download_urls:
             download_file(self.__session, download['url'], directory, download['filename'])
+
+    def __download_image(self):
+        url = self.info['url_image']
+        directory = self.__config.get('path', 'path.images')
+        download_file(self.__session, url, directory, os.path.split(url)[1])
+
+    def download(self, types):
+
+        self.__GET_login()
+        self.__POST_login()
+        self.__GET_claim()
+
+        log_json(self.info)
+
+        self.__download_ebooks(types)
+        self.__download_image()
