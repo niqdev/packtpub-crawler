@@ -23,7 +23,9 @@ python spider.py --config config/prod.cfg --all
 python spider.py --config config/prod.cfg --type pdf
 ```
 
-Note that you need to create `script/config/prod.cfg` with your credential, look at `prod_example.cfg` for reference.
+Note that you need to create `config/prod.cfg` with your credential, look at `prod_example.cfg` for reference.
+
+Create your [client_secrets.json](http://pythonhosted.org/PyDrive/quickstart.html#creating-and-updating-file) for
 
 #### Development
 Run a simple static server with
@@ -32,5 +34,5 @@ node server.js
 ```
 and test the crawler with
 ```
-python spider.py --dev --config config/dev.cfg --all
+python script/spider.py --dev --config config/dev.cfg --all
 ```

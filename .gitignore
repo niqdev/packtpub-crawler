@@ -8,7 +8,8 @@
 node_modules/
 
 #config
-script/config/prod.cfg
+config/prod.cfg
+config/client_secrets.json
 
 #download folder
 ebooks/
