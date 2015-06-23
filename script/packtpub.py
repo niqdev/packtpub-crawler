@@ -1,6 +1,7 @@
 import urllib
 import requests
 import os
+import re
 from utils import make_soup, wait, download_file
 from logs import *
 
@@ -70,7 +71,10 @@ class Packpub(object):
         soup = make_soup(response)
         div_target = soup.find('div', {'id': 'deal-of-the-day'})
 
-        self.info['title'] = div_target.select('div.dotd-title > h2')[0].string.strip()
+        title = div_target.select('div.dotd-title > h2')[0].string.strip()
+
+        self.info['title'] = title
+        self.info['filename'] = title.encode('ascii', 'ignore').replace(' ', '_')
         self.info['description'] = div_target.select('div.dotd-main-book-summary > div')[2].string.strip()
         self.info['url_image'] = 'https://' + div_target.select('div.dotd-main-book-image img')[0]['src'].lstrip('//')
         self.info['url_claim'] = self.__url_base + div_target.select('a.twelve-days-claim')[0]['href']
@@ -91,26 +95,38 @@ class Packpub(object):
 
         soup = make_soup(response)
         div_target = soup.find('div', {'id': 'product-account-list'})
+        div_claimed_book = div_target.select('.product-line')[0]
 
         # only last one just claimed
-        self.info['book_id'] = div_target.select('.product-line')[0]['nid']
-        self.info['author'] = div_target.find(class_='author').text.strip()
+        self.info['book_id'] = div_claimed_book['nid']
+        self.info['author'] = div_claimed_book.find(class_='author').text.strip()
+
+        source_code = div_claimed_book.find(href=re.compile('/code_download/*'))
+        if source_code is not None:
+            self.info['url_source_code'] = self.__url_base + source_code['href']
+
         wait(self.__delay)
 
     def __download_ebooks(self, types):
         download_urls = [dict(type=type, \
             url=self.__url_base + self.__config.get('url', 'url.download').format(self.info['book_id'], type), \
-            filename=self.info['title'].encode('ascii', 'ignore').replace(' ', '_') + '.' + type) \
+            filename= self.info['filename'] + '.' + type) \
             for type in types]
 
         directory = self.__config.get('path', 'path.ebooks')
         for download in download_urls:
             download_file(self.__session, download['url'], directory, download['filename'])
 
-    def __download_image(self):
-        url = self.info['url_image']
-        directory = self.__config.get('path', 'path.images')
-        download_file(self.__session, url, directory, os.path.split(url)[1])
+    def __download_additional_material(self):
+        directory = self.__config.get('path', 'path.additional_material')
+
+        url_image = self.info['url_image']
+        filename = self.info['filename'] + '_' + os.path.split(url_image)[1]
+        download_file(self.__session, url_image, directory, filename)
+
+        if 'url_source_code' in self.info:
+            download_file(self.__session, self.info['url_source_code'], directory, \
+                self.info['filename'] + '.zip')
 
     def download(self, types):
 
@@ -121,4 +137,4 @@ class Packpub(object):
         log_json(self.info)
 
         self.__download_ebooks(types)
-        self.__download_image()
+        self.__download_additional_material()

@@ -10,7 +10,6 @@ sudo pip install beautifulsoup4
 sudo pip install requests
 sudo pip install requests[security]
 sudo pip install clint
-#sudo pip install PIL- Pillow
 
 // run
 python spider.py

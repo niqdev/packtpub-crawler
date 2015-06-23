@@ -11,16 +11,16 @@ This crawler automates the following step:
 * claim the daily free eBook
 * parse title, description and useful information
 * download favorite format *.pdf .epub .mobi*
-* TODO download source code and cover
+* download source code and cover
 * TODO upload files to Google Drive
 * TODO notify via email
 
 ```
 cd script/
 python spider.py --config config/prod.cfg --all
+
+// supported types: pdf|epub|mobi
 python spider.py --config config/prod.cfg --type pdf
-python spider.py --config config/prod.cfg --type epub
-python spider.py --config config/prod.cfg --type mobi
 ```
 
 Note that you need to create `script/config/prod.cfg` with your credential, look at `prod_example.cfg` for reference.
