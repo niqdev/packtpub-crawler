@@ -107,7 +107,13 @@ class Packpub(object):
 
         wait(self.__delay)
 
-    def __download_ebooks(self, types):
+    def run(self):
+        self.__GET_login()
+        self.__POST_login()
+        self.__GET_claim()
+        log_json(self.info)
+
+    def download_ebooks(self, types):
         download_urls = [dict(type=type, \
             url=self.__url_base + self.__config.get('url', 'url.download').format(self.info['book_id'], type), \
             filename= self.info['filename'] + '.' + type) \
@@ -117,8 +123,8 @@ class Packpub(object):
         for download in download_urls:
             download_file(self.__session, download['url'], directory, download['filename'])
 
-    def __download_additional_material(self):
-        directory = self.__config.get('path', 'path.additional_material')
+    def download_extras(self):
+        directory = self.__config.get('path', 'path.extras')
 
         url_image = self.info['url_image']
         filename = self.info['filename'] + '_' + os.path.split(url_image)[1]
@@ -127,14 +133,3 @@ class Packpub(object):
         if 'url_source_code' in self.info:
             download_file(self.__session, self.info['url_source_code'], directory, \
                 self.info['filename'] + '.zip')
-
-    def download(self, types):
-
-        self.__GET_login()
-        self.__POST_login()
-        self.__GET_claim()
-
-        log_json(self.info)
-
-        self.__download_ebooks(types)
-        self.__download_additional_material()

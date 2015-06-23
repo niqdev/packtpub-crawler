@@ -11,16 +11,20 @@ This crawler automates the following step:
 * claim the daily free eBook
 * parse title, description and useful information
 * download favorite format *.pdf .epub .mobi*
-* download source code and cover
+* download source code and book cover
 * TODO upload files to [Google Drive](https://github.com/googledrive/python-quickstart) or [Dropbox](https://www.dropbox.com/developers/core/start/python)
 * TODO notify via email
 
 #### Commands
 ```
+// all format
 python script/spider.py --config config/prod.cfg --all
 
-// supported types: pdf|epub|mobi
+// only one type: pdf|epub|mobi
 python script/spider.py --config config/prod.cfg --type pdf
+
+// also additional material: source code (if exists) and book cover
+python script/spider.py --config config/prod.cfg --type pdf --extras
 ```
 
 #### Configuration

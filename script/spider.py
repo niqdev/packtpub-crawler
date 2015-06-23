@@ -36,6 +36,7 @@ def main():
 
     parser.add_argument('-c', '--config', required=True, help='configuration file')
     parser.add_argument('-d', '--dev', action='store_true')
+    parser.add_argument('-e', '--extras', action='store_true')
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-t', '--type', choices=['pdf', 'epub', 'mobi'], \
@@ -50,7 +51,11 @@ def main():
         config = config_file(args.config)
         types = parse_types(args)
 
-        Packpub(config, args.dev).download(types)
+        packpub = Packpub(config, args.dev)
+        packpub.run()
+        packpub.download_ebooks(types)
+        if args.extras:
+            packpub.download_extras()
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
