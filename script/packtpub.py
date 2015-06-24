@@ -108,12 +108,17 @@ class Packpub(object):
         wait(self.__delay)
 
     def run(self):
+        """
+        """
+
         self.__GET_login()
         self.__POST_login()
         self.__GET_claim()
-        log_json(self.info)
 
     def download_ebooks(self, types):
+        """
+        """
+
         download_urls = [dict(type=type, \
             url=self.__url_base + self.__config.get('url', 'url.download').format(self.info['book_id'], type), \
             filename= self.info['filename'] + '.' + type) \
@@ -124,6 +129,9 @@ class Packpub(object):
             download_file(self.__session, download['url'], directory, download['filename'])
 
     def download_extras(self):
+        """
+        """
+        
         directory = self.__config.get('path', 'path.extras')
 
         url_image = self.info['url_image']

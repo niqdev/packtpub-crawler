@@ -53,6 +53,8 @@ def main():
 
         packpub = Packpub(config, args.dev)
         packpub.run()
+        log_json(packpub.info)
+
         packpub.download_ebooks(types)
         if args.extras:
             packpub.download_extras()
