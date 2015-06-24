@@ -71,11 +71,11 @@ class Packpub(object):
         soup = make_soup(response)
         div_target = soup.find('div', {'id': 'deal-of-the-day'})
 
-        title = div_target.select('div.dotd-title > h2')[0].string.strip()
+        title = div_target.select('div.dotd-title > h2')[0].text.strip()
 
         self.info['title'] = title
         self.info['filename'] = title.encode('ascii', 'ignore').replace(' ', '_')
-        self.info['description'] = div_target.select('div.dotd-main-book-summary > div')[2].string.strip()
+        self.info['description'] = div_target.select('div.dotd-main-book-summary > div')[2].text.strip()
         self.info['url_image'] = 'https://' + div_target.select('div.dotd-main-book-image img')[0]['src'].lstrip('//')
         self.info['url_claim'] = self.__url_base + div_target.select('a.twelve-days-claim')[0]['href']
         # remove useless info
