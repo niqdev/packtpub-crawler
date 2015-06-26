@@ -48,7 +48,6 @@ class Packpub(object):
         form = soup.find('form', {'id': 'packt-user-login-form'})
         self.info['form_build_id'] = form.find('input', attrs={'name': 'form_build_id'})['value']
         self.info['form_id'] = form.find('input', attrs={'name': 'form_id'})['value']
-        wait(self.__delay)
 
     def __POST_login(self):
         data = self.info.copy()
@@ -62,17 +61,16 @@ class Packpub(object):
         if self.__dev:
             url += self.__config.get('url', 'url.loginPost')
             response = self.__session.get(url, headers=self.__headers, data=data)
+            self.__log_response(response)
         else:
             url += self.__config.get('url', 'url.login')
             response = self.__session.post(url, headers=self.__headers, data=data)
-
-        self.__log_response(response, 'POST', True)
+            self.__log_response(response, 'POST', True)
 
         soup = make_soup(response)
         div_target = soup.find('div', {'id': 'deal-of-the-day'})
 
         title = div_target.select('div.dotd-title > h2')[0].text.strip()
-
         self.info['title'] = title
         self.info['filename'] = title.encode('ascii', 'ignore').replace(' ', '_')
         self.info['description'] = div_target.select('div.dotd-main-book-summary > div')[2].text.strip()
@@ -81,7 +79,6 @@ class Packpub(object):
         # remove useless info
         self.info.pop('form_build_id', None)
         self.info.pop('form_id', None)
-        wait(self.__delay)
 
     def __GET_claim(self):
         url = ''
@@ -95,9 +92,9 @@ class Packpub(object):
 
         soup = make_soup(response)
         div_target = soup.find('div', {'id': 'product-account-list'})
-        div_claimed_book = div_target.select('.product-line')[0]
 
         # only last one just claimed
+        div_claimed_book = div_target.select('.product-line')[0]
         self.info['book_id'] = div_claimed_book['nid']
         self.info['author'] = div_claimed_book.find(class_='author').text.strip()
 
@@ -105,27 +102,28 @@ class Packpub(object):
         if source_code is not None:
             self.info['url_source_code'] = self.__url_base + source_code['href']
 
-        wait(self.__delay)
-
     def run(self):
         """
         """
 
         self.__GET_login()
+        wait(self.__delay)
         self.__POST_login()
+        wait(self.__delay)
         self.__GET_claim()
+        wait(self.__delay)
 
     def download_ebooks(self, types):
         """
         """
 
-        download_urls = [dict(type=type, \
+        downloads_info = [dict(type=type, \
             url=self.__url_base + self.__config.get('url', 'url.download').format(self.info['book_id'], type), \
             filename=self.info['filename'] + '.' + type) \
             for type in types]
 
         directory = self.__config.get('path', 'path.ebooks')
-        for download in download_urls:
+        for download in downloads_info:
             download_file(self.__session, download['url'], directory, download['filename'])
 
     def download_extras(self):
