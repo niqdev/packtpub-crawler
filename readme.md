@@ -35,14 +35,14 @@ From [documentation](https://developers.google.com/drive/web/quickstart/quicksta
 * Go to [APIs Console](https://code.google.com/apis/console) and make a new project named `PacktpubDrive
 * On 'Services' menu, turn Drive API on
 * On 'API Access' menu, create OAuth client ID
-  * Application type --> Installed application
-  * Installed application type --> Other
+  * Application type: Installed application
+  * Installed application type: Other
 * Click 'Download JSON' and save the file `config/drive.json`, look at `config/drive_example.json` for a sample.
 
 #### Development
 Run a simple static server with
 ```
-node server.js
+node dev/server.js
 ```
 and test the crawler with
 ```

@@ -12,7 +12,7 @@ var express = require('express');
 var morgan = require('morgan');
 var serveStatic = require('serve-static');
 
-var PATH = __dirname + '/public-dev';
+var PATH = __dirname + '/public';
 var PORT = 8080;
 
 var app = express();
