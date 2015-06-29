@@ -32,13 +32,12 @@ You need to create `config/prod.cfg` file with your Packt Publishing credential,
 
 From [documentation](https://developers.google.com/drive/web/quickstart/quickstart-python), Drive API requires OAuth2.0 for authentication, so to upload files you should:
 
-* Go to [APIs Console](https://code.google.com/apis/console) and make a new project named 'PacktpubDrive'
+* Go to [APIs Console](https://code.google.com/apis/console) and make a new project named `PacktpubDrive
 * On 'Services' menu, turn Drive API on
-* On 'API Access' menu, create OAuth2.0 client ID
-  * Select 'Application type' to be Web application
-  * Click on 'more options' in hostname settings
-  * Input http://localhost:8080/ for both 'Redirect URIs' and 'JavaScript origins'
-* Click 'Download JSON' to save `config/client_secrets.json`
+* On 'API Access' menu, create OAuth client ID
+  * Application type --> Installed application
+  * Installed application type --> Other
+* Click 'Download JSON' and save the file `config/drive.json`, look at `config/drive_example.json` for a sample.
 
 #### Development
 Run a simple static server with

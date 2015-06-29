@@ -1,6 +1,10 @@
 #macosx
 .DS_Store
 
+#ide
+.idea
+*.iml
+
 #python
 *.pyc
 
@@ -9,7 +13,7 @@ node_modules/
 
 #config
 config/prod.cfg
-config/client_secrets.json
+config/drive.json
 
 #download folder
 ebooks/

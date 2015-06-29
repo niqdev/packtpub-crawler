@@ -1,6 +1,7 @@
 """
 // setup environment
 sudo easy_install pip
+sudo pip install --upgrade
 
 // lists installed modules and version
 pip freeze
@@ -10,6 +11,12 @@ sudo pip install beautifulsoup4
 sudo pip install requests
 sudo pip install requests[security]
 sudo pip install clint
+// Drive
+sudo pip install httplib2
+sudo pip install --upgrade google-api-python-client
+// fix error: AttributeError: 'Module_six_moves_urllib_parse' object has no attribute 'urlparse'
+sudo pip install -I google-api-python-client==1.3.2
+
 
 // run
 python spider.py
