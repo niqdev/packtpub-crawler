@@ -3,7 +3,7 @@
 
 #ide
 .idea
-*.iml
+packtpub-crawler.iml
 
 #python
 *.pyc
