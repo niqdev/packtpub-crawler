@@ -1,7 +1,6 @@
 """
 // setup environment
 sudo easy_install pip
-sudo pip install --upgrade
 
 // lists installed modules and version
 pip freeze

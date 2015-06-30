@@ -13,7 +13,8 @@ node_modules/
 
 #config
 config/prod.cfg
-config/drive.json
+config/client_secrets.json
+config/auth_token.json
 
 #download folder
 ebooks/

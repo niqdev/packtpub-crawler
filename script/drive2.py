@@ -17,7 +17,7 @@ import oauth2client.client
 OAUTH2_SCOPE = 'https://www.googleapis.com/auth/drive'
 
 # Location of the client secrets.
-CLIENT_SECRETS = 'client_secrets.json'
+CLIENT_SECRETS = '../config/drive.json'
 
 # Path to the file to upload.
 FILENAME = 'document.txt'

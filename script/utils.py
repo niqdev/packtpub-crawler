@@ -1,5 +1,4 @@
 import requests
-from requests.exceptions import ConnectionError
 import ConfigParser
 from bs4 import BeautifulSoup
 from time import sleep

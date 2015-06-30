@@ -12,7 +12,7 @@ This crawler automates the following step:
 * parse title, description and useful information
 * download favorite format *.pdf .epub .mobi*
 * download source code and book cover
-* TODO upload files to [Google Drive](https://github.com/googledrive/python-quickstart) or [Dropbox](https://www.dropbox.com/developers/core/start/python)
+* TODO upload files to Google Drive or [Dropbox](https://www.dropbox.com/developers/core/start/python)
 * TODO notify via email
 
 #### Commands
@@ -30,7 +30,7 @@ python script/spider.py --config config/prod.cfg --type pdf --extras
 #### Configuration
 You need to create `config/prod.cfg` file with your Packt Publishing credential, look at `config/prod_example.cfg` for a sample.
 
-From [documentation](https://developers.google.com/drive/web/quickstart/quickstart-python), Drive API requires OAuth2.0 for authentication, so to upload files you should:
+From documentation, Drive API requires OAuth2.0 for authentication, so to upload files you should:
 
 * Go to [APIs Console](https://code.google.com/apis/console) and make a new project named `PacktpubDrive
 * On 'Services' menu, turn Drive API on
@@ -38,6 +38,7 @@ From [documentation](https://developers.google.com/drive/web/quickstart/quicksta
   * Application type: Installed application
   * Installed application type: Other
 * Click 'Download JSON' and save the file `config/drive.json`, look at `config/drive_example.json` for a sample.
+* Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/web/quickstart/quickstart-python), [example](https://github.com/googledrive/python-quickstart)
 
 #### Development
 Run a simple static server with
