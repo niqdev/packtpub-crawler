@@ -13,6 +13,7 @@ This crawler automates the following step:
 * download favorite format *.pdf .epub .mobi*
 * download source code and book cover
 * TODO upload files to Google Drive or [Dropbox](https://www.dropbox.com/developers/core/start/python)
+* TODO optionally compress before upload
 * TODO notify via email
 
 #### Commands
@@ -37,8 +38,8 @@ From documentation, Drive API requires OAuth2.0 for authentication, so to upload
 * On 'API Access' menu, create OAuth client ID
   * Application type: Installed application
   * Installed application type: Other
-* Click 'Download JSON' and save the file `config/drive.json`, look at `config/drive_example.json` for a sample.
-* Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/web/quickstart/quickstart-python), [example](https://github.com/googledrive/python-quickstart)
+* Click 'Download JSON' and save the file `config/client_secrets.json`.
+* Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/web/quickstart/quickstart-python), [example](https://github.com/googledrive/python-quickstart) and [permissions](https://developers.google.com/drive/v2/reference/permissions)
 
 #### Development
 Run a simple static server with

@@ -1,7 +1,12 @@
-import os
+from os.path import exists
 import webbrowser
 from oauth2client.client import flow_from_clientsecrets, OOB_CALLBACK_URN
 from oauth2client.file import Storage
+import httplib2
+import magic
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
+import pprint
 from logs import *
 
 # TODO: remove
@@ -13,18 +18,38 @@ class Drive(object):
 
     def __init__(self, config):
         self.__config = config
+        self.__drive_service = None
+        self.file_info = {}
 
-    def __credentials(self):
+    def __guess_info(self, file_path):
+        if not exists(file_path):
+            raise IOError('file not found!')
+
+        self.file_info = {
+            'path': file_path,
+            'name': file_path.split('/')[-1],
+            'mime_type': magic.from_file(file_path, mime=True),
+        }
+        log_info('[+] new file upload:')
+        # log_dict(self.file_info)
+
+    def __init_service(self):
         auth_token = self.__config.get('drive', 'drive.auth_token')
 
-        if os.path.exists(auth_token):
-            print '[+] file found: {0}'.format(auth_token)
-            storage = Storage(auth_token)
-            return storage.get()
+        if not exists(auth_token):
+            self.__save_credentials(auth_token)
 
-        flow = flow_from_clientsecrets( \
-            self.__config.get('drive', 'drive.client_secrets'), \
-            self.__config.get('drive', 'drive.oauth2_scope'), \
+        storage = Storage(auth_token)
+        credentials = storage.get()
+
+        http = httplib2.Http()
+        http = credentials.authorize(http)
+        self.__drive_service = build('drive', 'v2', http=http)
+
+    def __save_credentials(self, auth_token):
+        flow = flow_from_clientsecrets(
+            self.__config.get('drive', 'drive.client_secrets'),
+            self.__config.get('drive', 'drive.oauth2_scope'),
             OOB_CALLBACK_URN)
 
         authorize_url = flow.step1_get_authorize_url()
@@ -37,13 +62,41 @@ class Drive(object):
 
         storage = Storage(auth_token)
         storage.put(credentials)
-        return credentials
+        log_info('[+] new credentials saved')
 
-    def upload(self, filename):
-        print filename
-        self.__credentials()
+    def __insert_file(self):
 
+        print '[+] uploading file...'
+        media_body = MediaFileUpload(
+            self.file_info['path'], mimetype=self.file_info['mime_type'], resumable=True)
+        body = {
+            'title': self.file_info['name'],
+            'description': 'uploaded with packtpub-crawler',
+            'mimeType': self.file_info['mime_type']
+        }
+        file = self.__drive_service.files().insert(body=body, media_body=media_body).execute()
+        # log_dict(file)
+
+        print '[+] updating file permissions...'
+        permissions = {
+            'role': 'reader',
+            'type': 'anyone',
+            'value': self.__config.get('drive', 'drive.gmail')
+        }
+        self.__drive_service.permissions().insert(fileId=file['id'], body=permissions).execute()
+
+        # self.__drive_service.files().get(fileId=file['id']).execute()
+
+        self.file_info['id'] = file['id']
+        self.file_info['download_url'] = file['webContentLink']
+
+    def upload(self, file_path):
+        self.__guess_info(file_path)
+        self.__init_service()
+        self.__insert_file()
+
+# TODO remove
 if __name__ == '__main__':
     drive = Drive(config_file('../config/dev.cfg'))
-    drive.upload('document.txt')
-
+    drive.upload('../ebooks/Object-Oriented_JavaScript_-_Second_Edition.pdf')
+    log_dict(drive.file_info)
