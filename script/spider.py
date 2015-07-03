@@ -27,6 +27,7 @@ python spider.py -h
 import argparse
 from utils import ip_address, config_file
 from packtpub import Packpub
+from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX
 from logs import *
 
 def parse_types(args):
@@ -36,25 +37,28 @@ def parse_types(args):
         return args.types
 
 def main():
-    parser = argparse.ArgumentParser(\
-        description='Download FREE eBook every day from www.packtpub.com', \
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter, \
-        version='0.2')
+    parser = argparse.ArgumentParser(
+        description='Download FREE eBook every day from www.packtpub.com',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        version='0.3')
 
     parser.add_argument('-c', '--config', required=True, help='configuration file')
-    parser.add_argument('-d', '--dev', action='store_true')
-    parser.add_argument('-e', '--extras', action='store_true')
+    parser.add_argument('-d', '--dev', action='store_true', help='only for development')
+    parser.add_argument('-e', '--extras', action='store_true', help='download source code (if exists) and book cover')
+    parser.add_argument('-u', '--upload', choices=[SERVICE_DRIVE, SERVICE_DROPBOX], help='upload to cloud')
+    parser.add_argument('-a', '--archive', action='store_true', help='compress all file')
+    parser.add_argument('-n', '--notify', action='store_true', help='send confirmation email')
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('-t', '--type', choices=['pdf', 'epub', 'mobi'], \
-        default='pdf', help='ebook type')
-    group.add_argument('-a', '--all', dest='types', action='store_const', \
-        const=['pdf', 'epub', 'mobi'])
+    group.add_argument('-t', '--type', choices=['pdf', 'epub', 'mobi'],
+        default='pdf', help='specify eBook type')
+    group.add_argument('--all', dest='types', action='store_const',
+        const=['pdf', 'epub', 'mobi'], help='all eBook types')
 
     args = parser.parse_args()
 
     try:
-        #ip_address()
+        # ip_address()
         config = config_file(args.config)
         types = parse_types(args)
 
@@ -65,6 +69,15 @@ def main():
         packpub.download_ebooks(types)
         if args.extras:
             packpub.download_extras()
+
+        if args.archive:
+            raise NotImplementedError('not implemented yet!')
+
+        if args.upload is not None:
+            Upload(config, args.upload).run(packpub.info['paths'])
+
+        if args.notify:
+            raise NotImplementedError('not implemented yet!')
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')

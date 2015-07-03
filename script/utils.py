@@ -48,7 +48,7 @@ def download_file(r, url, directory, filename):
     Downloads file with progress bar
     """
     if not os.path.exists(directory):
-        #creates directories recursively
+        # creates directories recursively
         os.makedirs(directory)
         log_info('[+] created new directory: ' + directory)
 
@@ -63,3 +63,4 @@ def download_file(r, url, directory, filename):
                 f.write(chunk)
                 f.flush()
     log_success('[+] new download: {0}'.format(path))
+    return path

@@ -1,6 +1,5 @@
-import urllib
 import requests
-import os
+from os.path import split
 import re
 from utils import make_soup, wait, download_file
 from logs import *
@@ -16,7 +15,9 @@ class Packpub(object):
         self.__url_base = self.__config.get('url', 'url.base')
         self.__headers = self.__init_headers()
         self.__session = requests.Session()
-        self.info = {}
+        self.info = {
+            'paths': []
+        }
 
     def __init_headers(self):
         return {
@@ -54,7 +55,7 @@ class Packpub(object):
         data['email'] = self.__config.get('credential', 'credential.email')
         data['password'] = self.__config.get('credential', 'credential.password')
         data['op'] = 'Login'
-        #print '[-] data: {0}'.format(urllib.urlencode(data))
+        # print '[-] data: {0}'.format(urllib.urlencode(data))
 
         url = self.__url_base
         response = None
@@ -81,7 +82,6 @@ class Packpub(object):
         self.info.pop('form_id', None)
 
     def __GET_claim(self):
-        url = ''
         if self.__dev:
             url = self.__url_base + self.__config.get('url', 'url.account')
         else:
@@ -117,14 +117,15 @@ class Packpub(object):
         """
         """
 
-        downloads_info = [dict(type=type, \
-            url=self.__url_base + self.__config.get('url', 'url.download').format(self.info['book_id'], type), \
-            filename=self.info['filename'] + '.' + type) \
+        downloads_info = [dict(type=type,
+            url=self.__url_base + self.__config.get('url', 'url.download').format(self.info['book_id'], type),
+            filename=self.info['filename'] + '.' + type)
             for type in types]
 
         directory = self.__config.get('path', 'path.ebooks')
         for download in downloads_info:
-            download_file(self.__session, download['url'], directory, download['filename'])
+            self.info['paths'].append(
+                download_file(self.__session, download['url'], directory, download['filename']))
 
     def download_extras(self):
         """
@@ -133,9 +134,9 @@ class Packpub(object):
         directory = self.__config.get('path', 'path.extras')
 
         url_image = self.info['url_image']
-        filename = self.info['filename'] + '_' + os.path.split(url_image)[1]
-        download_file(self.__session, url_image, directory, filename)
+        filename = self.info['filename'] + '_' + split(url_image)[1]
+        self.info['paths'].append(download_file(self.__session, url_image, directory, filename))
 
         if 'url_source_code' in self.info:
-            download_file(self.__session, self.info['url_source_code'], directory, \
-                self.info['filename'] + '.zip')
+            self.info['paths'].append(download_file(self.__session, self.info['url_source_code'], directory,
+                self.info['filename'] + '.zip'))

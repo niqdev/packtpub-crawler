@@ -26,6 +26,10 @@ python script/spider.py --config config/prod.cfg --type pdf
 
 // also additional material: source code (if exists) and book cover
 python script/spider.py --config config/prod.cfg --type pdf --extras
+
+// upload to Drive (given the download url anyone can download it)
+python script/spider.py -c config/prod.cfg -t pdf --upload drive
+python script/spider.py -c config/prod.cfg --all --extras --upload drive
 ```
 
 #### Configuration

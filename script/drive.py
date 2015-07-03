@@ -6,11 +6,7 @@ import httplib2
 import magic
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
-import pprint
 from logs import *
-
-# TODO: remove
-from utils import config_file
 
 class Drive(object):
     """
@@ -19,13 +15,13 @@ class Drive(object):
     def __init__(self, config):
         self.__config = config
         self.__drive_service = None
-        self.file_info = {}
+        self.info = {}
 
     def __guess_info(self, file_path):
         if not exists(file_path):
             raise IOError('file not found!')
 
-        self.file_info = {
+        self.info = {
             'path': file_path,
             'name': file_path.split('/')[-1],
             'mime_type': magic.from_file(file_path, mime=True),
@@ -68,11 +64,11 @@ class Drive(object):
 
         print '[+] uploading file...'
         media_body = MediaFileUpload(
-            self.file_info['path'], mimetype=self.file_info['mime_type'], resumable=True)
+            self.info['path'], mimetype=self.info['mime_type'], resumable=True)
         body = {
-            'title': self.file_info['name'],
+            'title': self.info['name'],
             'description': 'uploaded with packtpub-crawler',
-            'mimeType': self.file_info['mime_type']
+            'mimeType': self.info['mime_type']
         }
         file = self.__drive_service.files().insert(body=body, media_body=media_body).execute()
         # log_dict(file)
@@ -87,16 +83,10 @@ class Drive(object):
 
         # self.__drive_service.files().get(fileId=file['id']).execute()
 
-        self.file_info['id'] = file['id']
-        self.file_info['download_url'] = file['webContentLink']
+        self.info['id'] = file['id']
+        self.info['download_url'] = file['webContentLink']
 
     def upload(self, file_path):
         self.__guess_info(file_path)
         self.__init_service()
         self.__insert_file()
-
-# TODO remove
-if __name__ == '__main__':
-    drive = Drive(config_file('../config/dev.cfg'))
-    drive.upload('../ebooks/Object-Oriented_JavaScript_-_Second_Edition.pdf')
-    log_dict(drive.file_info)
