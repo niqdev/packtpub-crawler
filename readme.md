@@ -35,7 +35,7 @@ python script/spider.py --config config/prod.cfg --all --extras --upload drive
 ```
 
 #### Configuration
-You need to create `config/prod.cfg` file with your Packt Publishing credential, look at `config/prod_example.cfg` for a sample.
+You need to create `config/prod.cfg` file with your Packt Publishing credential, look at `config/prod_example.cfg` for a [sample](https://github.com/niqdev/packtpub-crawler/blob/master/config/prod_example.cfg).
 
 From documentation, Drive API requires OAuth2.0 for authentication, so to upload files you should:
 
