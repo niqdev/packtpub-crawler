@@ -6,6 +6,7 @@ import httplib2
 import magic
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+from utils import thread_loader
 from logs import *
 
 class Drive(object):
@@ -61,7 +62,6 @@ class Drive(object):
         log_info('[+] new credentials saved')
 
     def __insert_file(self):
-
         print '[+] uploading file...'
         media_body = MediaFileUpload(
             self.info['path'], mimetype=self.info['mime_type'], resumable=True)
@@ -89,4 +89,4 @@ class Drive(object):
     def upload(self, file_path):
         self.__guess_info(file_path)
         self.__init_service()
-        self.__insert_file()
+        thread_loader(self.__insert_file)

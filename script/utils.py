@@ -2,8 +2,9 @@ import requests
 import ConfigParser
 from bs4 import BeautifulSoup
 from time import sleep
-import os
 from clint.textui import progress
+import os, sys, itertools
+from threading import Thread
 from logs import *
 
 def ip_address():
@@ -64,3 +65,17 @@ def download_file(r, url, directory, filename):
                 f.flush()
     log_success('[+] new download: {0}'.format(path))
     return path
+
+def thread_loader(function):
+    """
+    Starts a thread with loading bar
+    """
+
+    thread = Thread(target=function)
+    thread.start()
+    spinner = itertools.cycle(['-', '/', '|', '\\'])
+    while thread.is_alive():
+        sys.stdout.write(spinner.next())
+        sys.stdout.flush()
+        # erase the last written char
+        sys.stdout.write('\b')

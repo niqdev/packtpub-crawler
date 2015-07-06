@@ -1,7 +1,5 @@
 # packtpub-crawler
 
-> work in progress...
-
 ### Download FREE eBook every day from [www.packtpub.com](https://www.packtpub.com/packt/offers/free-learning)
 
 This crawler automates the following step:
@@ -12,9 +10,7 @@ This crawler automates the following step:
 * parse title, description and useful information
 * download favorite format *.pdf .epub .mobi*
 * download source code and book cover
-* TODO upload files to Google Drive or [Dropbox](https://www.dropbox.com/developers/core/start/python)
-* TODO optionally compress before upload
-* TODO notify via email
+* upload files to Google Drive
 
 #### Commands
 ```
@@ -56,3 +52,8 @@ and test the crawler with
 ```
 python script/spider.py --dev --config config/dev.cfg --all
 ```
+
+#### Possible improvements
+* compress files before upload
+* add uploading service for [Dropbox](https://www.dropbox.com/developers/core/start/python)
+* notify via email

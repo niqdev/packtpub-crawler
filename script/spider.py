@@ -5,6 +5,9 @@ sudo easy_install pip
 // lists installed modules and version
 pip freeze
 
+// search
+pip search module_name
+
 sudo pip install termcolor
 sudo pip install beautifulsoup4
 sudo pip install requests
@@ -40,14 +43,17 @@ def main():
     parser = argparse.ArgumentParser(
         description='Download FREE eBook every day from www.packtpub.com',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        version='0.3')
+        version='1.0')
 
     parser.add_argument('-c', '--config', required=True, help='configuration file')
     parser.add_argument('-d', '--dev', action='store_true', help='only for development')
     parser.add_argument('-e', '--extras', action='store_true', help='download source code (if exists) and book cover')
-    parser.add_argument('-u', '--upload', choices=[SERVICE_DRIVE, SERVICE_DROPBOX], help='upload to cloud')
-    parser.add_argument('-a', '--archive', action='store_true', help='compress all file')
-    parser.add_argument('-n', '--notify', action='store_true', help='send confirmation email')
+    parser.add_argument('-u', '--upload', choices=[SERVICE_DRIVE], help='upload to cloud')
+
+    # possible improvements:
+    # parser.add_argument('-u', '--upload', choices=[SERVICE_DRIVE, SERVICE_DROPBOX], help='upload to cloud')
+    # parser.add_argument('-a', '--archive', action='store_true', help='compress all file')
+    # parser.add_argument('-n', '--notify', action='store_true', help='send confirmation email')
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-t', '--type', choices=['pdf', 'epub', 'mobi'],
@@ -58,7 +64,7 @@ def main():
     args = parser.parse_args()
 
     try:
-        # ip_address()
+        ip_address()
         config = config_file(args.config)
         types = parse_types(args)
 

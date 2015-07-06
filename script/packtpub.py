@@ -1,6 +1,6 @@
 import requests
-from os.path import split
 import re
+from os.path import split
 from utils import make_soup, wait, download_file
 from logs import *
 
