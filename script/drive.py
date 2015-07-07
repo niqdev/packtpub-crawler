@@ -73,7 +73,7 @@ class Drive(object):
         file = self.__drive_service.files().insert(body=body, media_body=media_body).execute()
         # log_dict(file)
 
-        print '[+] updating file permissions...'
+        print '\b[+] updating file permissions...'
         permissions = {
             'role': 'reader',
             'type': 'anyone',
