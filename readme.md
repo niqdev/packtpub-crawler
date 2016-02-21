@@ -12,20 +12,26 @@ This crawler automates the following step:
 * download source code and book cover
 * upload files to Google Drive
 
-#### Commands
+#### Default command
+```bash
+# upload pdf to drive
+python script/spider.py -c config/prod.cfg -u drive
 ```
-// download all format
+
+#### Other options
+```bash
+# download all format
 python script/spider.py --config config/prod.cfg --all
 
-// download only one type: pdf|epub|mobi
+# download only one format: pdf|epub|mobi
 python script/spider.py --config config/prod.cfg --type pdf
 
-// download also additional material: source code (if exists) and book cover
+# download also additional material: source code (if exists) and book cover
 python script/spider.py --config config/prod.cfg -t pdf --extras
-// equivalent (default is pdf)
+# equivalent (default is pdf)
 python script/spider.py -c config/prod.cfg -e
 
-// download and then upload to Drive (given the download url anyone can download it)
+# download and then upload to Drive (given the download url anyone can download it)
 python script/spider.py -c config/prod.cfg -t epub --upload drive
 python script/spider.py --config config/prod.cfg --all --extras --upload drive
 ```
@@ -57,3 +63,5 @@ python script/spider.py --dev --config config/dev.cfg --all
 * compress files before upload
 * add uploading service for [Dropbox](https://www.dropbox.com/developers/core/start/python)
 * notify via email
+* log to file and console: [example](http://stackoverflow.com/questions/4675728/redirect-stdout-to-a-file-in-python)
+* cron
