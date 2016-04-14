@@ -47,7 +47,7 @@ From documentation, Drive API requires OAuth2.0 for authentication, so to upload
   * Application type: Installed application
   * Installed application type: Other
 * Click *Download JSON* and save the file `config/client_secrets.json`.
-* Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/web/quickstart/quickstart-python), [example](https://github.com/googledrive/python-quickstart) and [permissions](https://developers.google.com/drive/v2/reference/permissions)
+* Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/v3/web/quickstart/python), [example](https://github.com/googledrive/python-quickstart) and [permissions](https://developers.google.com/drive/v2/reference/permissions)
 
 #### Development (only for spidering)
 Run a simple static server with
