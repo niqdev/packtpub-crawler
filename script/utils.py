@@ -53,6 +53,7 @@ def download_file(r, url, directory, filename):
         os.makedirs(directory)
         log_info('[+] created new directory: ' + directory)
 
+    filename = filename.replace(':', '-')
     path = os.path.join(directory, filename)
 
     print '[-] downloading file from url: {0}'.format(url)
