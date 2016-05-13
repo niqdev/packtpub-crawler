@@ -1,11 +1,11 @@
 """
-// setup environment
+# setup environment
 sudo easy_install pip
 
-// lists installed modules and version
+# lists installed modules and version
 pip freeze
 
-// search
+# search
 pip search module_name
 
 sudo pip install termcolor
@@ -13,24 +13,21 @@ sudo pip install beautifulsoup4
 sudo pip install requests
 sudo pip install requests[security]
 sudo pip install clint
-// Drive
+# Drive
 sudo pip install httplib2
 sudo pip install --upgrade google-api-python-client
-// fix error: AttributeError: 'Module_six_moves_urllib_parse' object has no attribute 'urlparse'
+# fix error: AttributeError: 'Module_six_moves_urllib_parse' object has no attribute 'urlparse'
 sudo pip install -I google-api-python-client==1.3.2
 sudo pip install apiclient
 
-
-// run
-python spider.py
-python spider.py -e prod
-python spider.py -h
+@see https://github.com/niqdev/packtpub-crawler
 """
 
 import argparse
 from utils import ip_address, config_file
 from packtpub import Packpub
 from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX
+from notify import Notify
 from logs import *
 
 def parse_types(args):
@@ -50,7 +47,7 @@ def main():
     parser.add_argument('-e', '--extras', action='store_true', help='download source code (if exists) and book cover')
     parser.add_argument('-u', '--upload', choices=[SERVICE_DRIVE, SERVICE_DROPBOX], help='upload to cloud')
     parser.add_argument('-a', '--archive', action='store_true', help='compress all file')
-    parser.add_argument('-n', '--notify', action='store_true', help='send confirmation email')
+    parser.add_argument('-n', '--notify', action='store_true', help='notify via email')
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-t', '--type', choices=['pdf', 'epub', 'mobi'],
@@ -77,10 +74,11 @@ def main():
             raise NotImplementedError('not implemented yet!')
 
         if args.upload is not None:
-            Upload(config, args.upload).run(packpub.info['paths'])
+            upload = Upload(config, args.upload)
+            upload.run(packpub.info['paths'])
 
         if args.notify:
-            raise NotImplementedError('not implemented yet!')
+            Notify(config).send_email(packpub.info, upload.info)
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
