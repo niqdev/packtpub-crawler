@@ -54,10 +54,6 @@ class Notify(object):
         return msg
 
     def send_email(self):
-        if not self.__upload_info:
-            log_warn('[-] missing upload info: unable to notify')
-            return
-
         server = smtplib.SMTP(self.__config.get('notify', 'notify.host'), self.__config.get('notify', 'notify.port'))
         server.starttls()
         server.login(self.__config.get('notify', 'notify.username'), self.__config.get('notify', 'notify.password'))
@@ -67,4 +63,4 @@ class Notify(object):
         server.sendmail(message['From'], receivers, message.as_string())
         server.quit()
 
-        log_info('[+] Notified: {0}'.format(receivers))
+        log_success('[+] Notified to: {0}'.format(receivers))

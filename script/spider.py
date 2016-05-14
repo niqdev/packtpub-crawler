@@ -73,12 +73,16 @@ def main():
         if args.archive:
             raise NotImplementedError('not implemented yet!')
 
+        upload = None
         if args.upload is not None:
             upload = Upload(config, args.upload)
             upload.run(packpub.info['paths'])
 
         if args.notify:
-            Notify(config, packpub.info, upload.info).send_email()
+            if upload is not None:
+                Notify(config, packpub.info, upload.info).send_email()
+            else:
+                log_warn('[-] skip notification: missing upload info')
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
