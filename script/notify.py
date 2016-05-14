@@ -15,49 +15,56 @@ class Notify(object):
     def __prepare_message(self):
         """
         """
-        log_json(self.__packpub_info)
-        log_json(self.__upload_info)
-        # Create message container - the correct MIME type is multipart/alternative.
-        msg = MIMEMultipart('alternative')
-        msg['Subject'] = "Link"
-        msg['From'] = "aaa"
-        msg['To'] = "bbb"
+        #log_json(self.__packpub_info)
+        #log_json(self.__upload_info)
 
-        # Create the body of the message (a plain-text and an HTML version).
-        text = "Hi!\nHow are you?\nHere is the link you wanted:\nhttps://www.python.org"
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = "[packtpub-crawler]"
+        msg['From'] = self.__config.get('notify', 'notify.from')
+        msg['To'] = self.__config.get('notify', 'notify.to')
+
+        text = "Enjoy your daily FREE eBook!"
         html = """\
         <html>
           <head></head>
           <body>
-            <p>Hi!<br>
-               How are you?<br>
-               Here is the <a href="https://www.python.org">link</a> you wanted.
-            </p>
+            <div>{title}</div>
+            <div>{description}</div>
+            <ul>
+            """.format(title=self.__packpub_info['title'], description=self.__packpub_info['description'])
+
+        for detail in self.__upload_info['details']:
+            html += """<li>{mime_type} - <a href="{download_url}">{name}</a></li>"""\
+                .format(mime_type=detail['mime_type'], download_url=detail['download_url'], name=detail['name'])
+
+        html += """\
+            </ul>
+            <img src="{image}" alt="cover" />
+            <div>Powered by <a href="https://github.com/niqdev/packtpub-crawler">packtpub-crawler</a></div>
           </body>
         </html>
-        """
+        """.format(image=self.__packpub_info['url_image'])
 
-        # Record the MIME types of both parts - text/plain and text/html.
         part1 = MIMEText(text, 'plain')
         part2 = MIMEText(html, 'html')
 
-        # Attach parts into message container.
-        # According to RFC 2046, the last part of a multipart message, in this case
-        # the HTML message, is best and preferred.
         msg.attach(part1)
         msg.attach(part2)
 
-        return msg.as_string()
+        return msg
 
     def send_email(self):
+        if not self.__upload_info:
+            log_warn('[-] missing upload info: unable to notify')
+            return
+
         server = smtplib.SMTP(self.__config.get('notify', 'notify.host'), self.__config.get('notify', 'notify.port'))
         server.starttls()
         server.login(self.__config.get('notify', 'notify.username'), self.__config.get('notify', 'notify.password'))
 
-        sender = self.__config.get('notify', 'notify.from')
-        receivers = self.__config.get('notify', 'notify.to').split(",")
         message = self.__prepare_message()
-        server.sendmail(sender, receivers, message)
+        receivers = message['To'].split(",")
+        server.sendmail(message['From'], receivers, message.as_string())
         server.quit()
 
         log_info('[+] Notified: {0}'.format(receivers))

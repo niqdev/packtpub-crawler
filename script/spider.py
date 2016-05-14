@@ -58,10 +58,10 @@ def main():
     args = parser.parse_args()
 
     try:
-        #ip_address()
+        ip_address()
         config = config_file(args.config)
         types = parse_types(args)
-        """
+
         packpub = Packpub(config, args.dev)
         packpub.run()
         log_json(packpub.info)
@@ -76,12 +76,9 @@ def main():
         if args.upload is not None:
             upload = Upload(config, args.upload)
             upload.run(packpub.info['paths'])
-        """
+
         if args.notify:
-            # TODO only if uploaded to drive!!
-            # controllare size of upload_info_details
-            #Notify(config).send_email(packpub.info, upload.info)
-            Notify(config, {}, {}).send_email()
+            Notify(config, packpub.info, upload.info).send_email()
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
