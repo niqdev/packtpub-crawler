@@ -11,6 +11,9 @@ class Upload(object):
 
     def __init__(self, config, service_type):
         self.__config = config
+        self.info = {
+            'details': []
+        }
         if service_type == SERVICE_DRIVE:
             self.service = Drive(config)
         elif service_type == SERVICE_DROPBOX:
@@ -21,4 +24,5 @@ class Upload(object):
         """
         for path in paths:
             self.service.upload(path)
+            self.info['details'].append(self.service.info)
             log_dict(self.service.info)

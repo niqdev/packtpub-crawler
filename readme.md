@@ -11,11 +11,12 @@ This crawler automates the following step:
 * download favorite format *.pdf .epub .mobi*
 * download source code and book cover
 * upload files to Google Drive
+* notify via email
 
 #### Default command
 ```bash
-# upload pdf to drive
-python script/spider.py -c config/prod.cfg -u drive
+# upload pdf to drive and notify via email
+python script/spider.py -c config/prod.cfg -u drive -n
 ```
 
 #### Other options
@@ -49,6 +50,8 @@ From documentation, Drive API requires OAuth2.0 for authentication, so to upload
 * Click *Download JSON* and save the file `config/client_secrets.json`.
 * Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/v3/web/quickstart/python), [example](https://github.com/googledrive/python-quickstart) and [permissions](https://developers.google.com/drive/v2/reference/permissions)
 
+If you want to *send* a notification via email using Gmail you have to [allow "less secure apps"](https://www.google.com/settings/security/lesssecureapps) on your account.
+
 #### Development (only for spidering)
 Run a simple static server with
 ```
@@ -62,6 +65,5 @@ python script/spider.py --dev --config config/dev.cfg --all
 #### Possible improvements
 * compress files before upload
 * add uploading service for [Dropbox](https://www.dropbox.com/developers/core/start/python)
-* notify via email
 * log to file and console: [example](http://stackoverflow.com/questions/4675728/redirect-stdout-to-a-file-in-python)
 * cron

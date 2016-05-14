@@ -20,6 +20,7 @@ class Packpub(object):
         }
 
     def __init_headers(self):
+        # improvement: random user agent
         return {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'Accept-Encoding': 'gzip, deflate',
