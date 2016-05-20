@@ -58,7 +58,7 @@ def main():
     args = parser.parse_args()
 
     try:
-        ip_address()
+        #ip_address()
         config = config_file(args.config)
         types = parse_types(args)
 
