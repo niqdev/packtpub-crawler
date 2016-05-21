@@ -31,7 +31,8 @@ class Notify(object):
             <div>{title}</div>
             <div>{description}</div>
             <ul>
-            """.format(title=self.__packpub_info['title'], description=self.__packpub_info['description'])
+            """.format(title=self.__packpub_info['title'].encode('utf-8'),
+                       description=self.__packpub_info['description'].encode('utf-8'))
 
         for detail in self.__upload_info['details']:
             html += """<li>{mime_type} - <a href="{download_url}">{name}</a></li>"""\
