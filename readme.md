@@ -78,7 +78,6 @@ From documentation, Drive API requires OAuth2.0 for authentication, so to upload
   * In *OAuth consent screen* tab set **PacktpubDrive** as the product name shown to users
   * In *Credentials* tab create credentials of type *OAuth client ID* and choose Application type *Other* named **PacktpubDriveCredentials**
 * Click *Download JSON* and save the file `config/client_secrets.json`
-* Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/v3/web/quickstart/python), [example](https://github.com/googledrive/python-quickstart) and [permissions](https://developers.google.com/drive/v2/reference/permissions)
 * Change your Drive credentials in the config file
 
 ```
@@ -93,6 +92,8 @@ Now you should be able to upload to Drive your eBook
 python script/spider.py --config config/prod.cfg --upload drive
 ```
 
+Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/v3/web/quickstart/python), [example](https://github.com/googledrive/python-quickstart) and [permissions](https://developers.google.com/drive/v2/reference/permissions)
+
 #### Notification setup
 
 To *send* a notification via email using Gmail you should:
@@ -102,8 +103,7 @@ To *send* a notification via email using Gmail you should:
 
 ```
 [notify]
-notify.host=smtp.gmail.com
-notify.port=587
+...
 notify.username=EMAIL_USERNAME@gmail.com
 notify.password=EMAIL_PASSWORD
 notify.from=FROM_EMAIL@gmail.com
