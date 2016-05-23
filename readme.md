@@ -41,22 +41,21 @@ python script/spider.py --config config/prod.cfg --all --extras --upload drive
 
 Before you start you should
 
-* verify with `python --version` that your currently installed version of Python is **2.x**
+* verify that your currently installed version of Python is **2.x** with `python --version`
 * install all the dependencies (you might need *sudo* privilege)
 
-```
+```bash
 # install pip (package manager)
 apt-get install python-pip
 
 # install all dependencies
 pip install bs4 clint termcolor
 TODO
-
 ```
 
-* clone the repository with `git clone https://github.com/niqdev/packtpub-crawler.git`
-* create a config file with your own credentials i.e. `cp config/prod_example.cfg config/prod.cfg`,
-see the [example](https://github.com/niqdev/packtpub-crawler/blob/master/config/prod_example.cfg) and at least you should change
+* clone the repository `git clone https://github.com/niqdev/packtpub-crawler.git`
+* create a [config](https://github.com/niqdev/packtpub-crawler/blob/master/config/prod_example.cfg) file `cp config/prod_example.cfg config/prod.cfg`
+* change your own credentials in the config file
 ```
 [credential]
 credential.email=PACKTPUB_EMAIL
@@ -69,12 +68,13 @@ Now you should be able to claim and download your first eBook with `python scrip
 
 From documentation, Drive API requires OAuth2.0 for authentication, so to upload files you should:
 
-* Go to [Google APIs Console](https://code.google.com/apis/console) and *create* a new [Drive](https://console.developers.google.com/apis/api/drive/overview) project named **PacktpubDrive**
-* On *API manager > Overview* menu, *Enable* Google Drive API
+* Go to [Google APIs Console](https://code.google.com/apis/console) and create a new [Drive](https://console.developers.google.com/apis/api/drive/overview) project named **PacktpubDrive**
+* On *API manager > Overview* menu
+  * enable Google Drive API
 * On *API manager > Credentials* menu
- * In *OAuth consent screen* tab set **PacktpubDrive** as the product name shown to users
- * In *Credentials* tab create credentials of type *OAuth client ID* and choose Application type *Other* named **PacktpubDriveCredentials**
-* Click *Download JSON* and save the file `config/client_secrets.json`.
+  * In *OAuth consent screen* tab set **PacktpubDrive** as the product name shown to users
+  * In *Credentials* tab create credentials of type *OAuth client ID* and choose Application type *Other* named **PacktpubDriveCredentials**
+* Click *Download JSON* and save the file `config/client_secrets.json`
 * Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/v3/web/quickstart/python), [example](https://github.com/googledrive/python-quickstart) and [permissions](https://developers.google.com/drive/v2/reference/permissions)
 
 If you want to *send* a notification via email using Gmail you have to [allow "less secure apps"](https://www.google.com/settings/security/lesssecureapps) on your account.
