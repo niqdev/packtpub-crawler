@@ -37,14 +37,47 @@ python script/spider.py -c config/prod.cfg -t epub --upload drive
 python script/spider.py --config config/prod.cfg --all --extras --upload drive
 ```
 
-#### Configuration
-You need to create `config/prod.cfg` file with your Packt Publishing credential, look at `config/prod_example.cfg` for a [sample](https://github.com/niqdev/packtpub-crawler/blob/master/config/prod_example.cfg).
+#### Basic setup
+
+Before you start you should
+
+* verify with `python --version` that your currently installed version of Python is *2.x*
+
+* install all the dependencies (you might need *sudo* privilege)
+
+```
+# install pip (package manager)
+apt-get install python-pip
+
+# install all dependencies
+pip install bs4 clint termcolor
+TODO
+
+```
+
+Then you must clone the repository `git clone https://github.com/niqdev/packtpub-crawler.git`,
+create a config file named `config/prod.cfg` with your own credentials,
+see the [example](https://github.com/niqdev/packtpub-crawler/blob/master/config/prod_example.cfg)
+i.e. `cp config/prod_example.cfg config/prod.cfg`
+
+and at least you should change
+```
+[credential]
+credential.email=PACKTPUB_EMAIL
+credential.password=PACKTPUB_PASSWORD
+```
+
+to be able to claim and download your first eBook with `python script/spider.py -c config/prod.cfg`.
+
+#### Advanced setup
 
 From documentation, Drive API requires OAuth2.0 for authentication, so to upload files you should:
 
-* Go to [APIs Console](https://code.google.com/apis/console) and make a new project named **PacktpubDrive**
-* On *Services* menu, turn Drive API on
-* On *API Access* menu, create OAuth client ID
+* Go to [Google APIs Console](https://code.google.com/apis/console) and *create* a new [Drive](https://console.developers.google.com/apis/api/drive/overview) project named **PacktpubDrive**
+* On *API manager > Overview* menu, *Enable* Google Drive API
+Configure consent screen
+set a product name on the consent screen
+* On *API manager > Credentials* menu, create credentials of type *OAuth client ID*
   * Application type: Installed application
   * Installed application type: Other
 * Click *Download JSON* and save the file `config/client_secrets.json`.
