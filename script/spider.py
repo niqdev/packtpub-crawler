@@ -1,28 +1,3 @@
-"""
-# setup environment
-sudo easy_install pip
-
-# lists installed modules and version
-pip freeze
-
-# search
-pip search module_name
-
-sudo pip install termcolor
-sudo pip install beautifulsoup4
-sudo pip install requests
-sudo pip install requests[security]
-sudo pip install clint
-# Drive
-sudo pip install httplib2
-sudo pip install --upgrade google-api-python-client
-# fix error: AttributeError: 'Module_six_moves_urllib_parse' object has no attribute 'urlparse'
-sudo pip install -I google-api-python-client==1.3.2
-sudo pip install apiclient
-
-@see https://github.com/niqdev/packtpub-crawler
-"""
-
 import argparse
 from utils import ip_address, config_file
 from packtpub import Packpub
@@ -91,4 +66,20 @@ def main():
         log_error('[-] something weird occurred, exiting...')
 
 if __name__ == '__main__':
+    print ("""
+         __             __         __           __           __    __        __
+        /\ \     __    /\ \       /\ \         /\ \         /\ \  /\ \    _ / /\\
+       /  \ \   /\_\   \ \ \     /  \ \       /  \ \____   /  \ \ \ \ \  /_/ / /
+      / /\ \ \_/ / /   /\ \_\   / /\ \ \     / /\ \_____\ / /\ \ \ \ \ \ \___\/
+     / / /\ \___/ /   / /\/_/  / / /\ \ \   / / /\/___  // / /\ \_\/ / /  \ \ \\
+    / / /  \/____/   / / /    / / /  \ \_\ / / /   / / // /_/_ \/_/\ \ \   \_\ \\
+   / / /    / / /   / / /    / / / _ / / // / /   / / // /____/\    \ \ \  / / /
+  / / /    / / /   / / /    / / / /\ \/ // / /   / / // /\____\/     \ \ \/ / /
+ / / /    / / /___/ / /__  / / /__\ \ \/ \ \ \__/ / // / /______      \ \ \/ /
+/ / /    / / //\__\/_/___\/ / /____\ \ \  \ \___\/ // / /_______\      \ \  /
+\/_/     \/_/ \/_________/\/________\_\/   \/_____/ \/__________/       \_\/
+
+Download FREE eBook every day from www.packtpub.com
+@see github.com/niqdev/packtpub-crawler
+        """)
     main()
