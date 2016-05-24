@@ -49,8 +49,8 @@ Before you start you should
 apt-get install python-pip
 
 # install all dependencies
-pip install bs4 clint termcolor
-TODO
+pip install beautifulsoup4 html5lib clint termcolor python-magic
+pip install --upgrade google-api-python-client
 ```
 
 * Clone the repository `git clone https://github.com/niqdev/packtpub-crawler.git`
@@ -92,6 +92,7 @@ Now you should be able to upload to Drive your eBook
 python script/spider.py --config config/prod.cfg --upload drive
 ```
 
+Only the first time you will be prompted to login in a browser which has javascript enabled (no text-based browser) to generate `config/auth_token.json` file. 
 Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/v3/web/quickstart/python), [example](https://github.com/googledrive/python-quickstart) and [permissions](https://developers.google.com/drive/v2/reference/permissions)
 
 #### Notification setup

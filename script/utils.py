@@ -34,7 +34,7 @@ def make_soup(response, debug=False):
     """
 
     print '[*] fetching url... {0} | {1}'.format(response.status_code, response.url)
-    soup = BeautifulSoup(response.text, from_encoding=response.encoding)
+    soup = BeautifulSoup(response.text, 'html5lib')
     if debug:
         print soup.prettify().encode('utf-8')
     return soup
