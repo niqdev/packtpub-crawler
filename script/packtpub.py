@@ -76,7 +76,7 @@ class Packpub(object):
         self.info['title'] = title
         self.info['filename'] = title.encode('ascii', 'ignore').replace(' ', '_')
         self.info['description'] = div_target.select('div.dotd-main-book-summary > div')[2].text.strip()
-        self.info['url_image'] = 'https:' + div_target.select('div.dotd-main-book-image img')[0]['src']
+        self.info['url_image'] = 'https:' + div_target.select('div.dotd-main-book-image img')[0]['data-original']
         self.info['url_claim'] = self.__url_base + div_target.select('a.twelve-days-claim')[0]['href']
         # remove useless info
         self.info.pop('form_build_id', None)
