@@ -92,7 +92,7 @@ python script/spider.py --config config/prod.cfg --upload drive
 ```
 
 Only the first time you will be prompted to login in a browser which has javascript enabled (no text-based browser) to generate `config/auth_token.json`.
-You should also copy and paste in the config the drive *FOLDER_ID*, otherwise every time a new folder with the same name will be created.
+You should also copy and paste in the config the *FOLDER_ID*, otherwise every time a new folder with the same name will be created.
 ```
 [drive]
 ...
@@ -107,7 +107,7 @@ Documentation: [OAuth](https://developers.google.com/api-client-library/python/g
 To *send* a notification via email using Gmail you should:
 
 * Allow ["less secure apps"](https://www.google.com/settings/security/lesssecureapps) and ["DisplayUnlockCaptcha"](https://accounts.google.com/DisplayUnlockCaptcha) on your account
-* If you can't sign in to your email app due to `smtplib.SMTPAuthenticationError`, [here](https://support.google.com/mail/answer/78754) some suggestion
+* If you can't sign in to your email app due to `smtplib.SMTPAuthenticationError`, [here](https://support.google.com/mail/answer/78754) the troubleshooting
 * Change your Gmail credentials in the config file
 
 ```
