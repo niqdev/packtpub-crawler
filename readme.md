@@ -12,6 +12,9 @@ This crawler automates the following step:
 * download source code and book cover
 * upload files to Google Drive
 * notify via email
+* schedule daily job on Heroku
+
+## How to
 
 #### Default command
 ```bash
@@ -45,12 +48,8 @@ Before you start you should
 * install all the dependencies (you might need *sudo* privilege)
 
 ```bash
-# install pip (package manager)
-apt-get install python-pip
-
 # install all dependencies
-pip install beautifulsoup4 html5lib clint termcolor python-magic
-pip install --upgrade google-api-python-client
+pip install -r requirements.txt
 ```
 
 * Clone the repository `git clone https://github.com/niqdev/packtpub-crawler.git`
@@ -92,7 +91,13 @@ Now you should be able to upload to Drive your eBook
 python script/spider.py --config config/prod.cfg --upload drive
 ```
 
-Only the first time you will be prompted to login in a browser which has javascript enabled (no text-based browser) to generate `config/auth_token.json` file. 
+Only the first time you will be prompted to login in a browser which has javascript enabled (no text-based browser) to generate `config/auth_token.json`.
+You should also copy and paste in the config the drive FOLDER_ID, otherwise every time a new folder with the same name will be created.
+```
+drive.default_folder=packtpub
+drive.upload_folder=FOLDER_ID
+```
+
 Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/v3/web/quickstart/python), [example](https://github.com/googledrive/python-quickstart) and [permissions](https://developers.google.com/drive/v2/reference/permissions)
 
 #### Notification setup
@@ -116,6 +121,50 @@ Now you should be able to notify your accounts
 python script/spider.py --config config/prod.cfg --upload drive --notify
 ```
 
+#### Heroku setup
+```
+# create a new branch
+git checkout -b heroku-scheduler
+
+# update .gitignore and commit your changes
+(remove)
+config/prod.cfg
+config/client_secrets.json
+config/auth_token.json
+(add)
+dev/
+config/dev.cfg
+config/prod_example.cfg
+
+# create a new app
+heroku login
+heroku create APP_NAME
+
+# add scheduler (requires account verification) 
+heroku addons:create scheduler:standard
+
+# config job from browser: Free/Daily/Hour/Command - python ./script/scheduler.py
+heroku addons:open scheduler
+
+# deploy your app
+git push -u heroku heroku-scheduler:master
+heroku ps:scale clock=1
+
+# verify if everything works fine
+heroku ps
+heroku logs --ps clock.1
+heroku logs --tail
+```
+
+Update `script/scheduler.py` with your own schedule preferences.
+
+More info about Heroku [Scheduler](https://devcenter.heroku.com/articles/scheduler), [Clock Processes](https://devcenter.heroku.com/articles/clock-processes-python), [Add-on](https://elements.heroku.com/addons/scheduler) and [APScheduler](http://apscheduler.readthedocs.io/en/latest/userguide.html)
+
+#### Cron setup
+```
+TODO
+```
+
 #### Development (only for spidering)
 Run a simple static server with
 ```
@@ -126,13 +175,7 @@ and test the crawler with
 python script/spider.py --dev --config config/dev.cfg --all
 ```
 
-#### Possible improvements
-* compress files before upload
-* add uploading service for [Dropbox](https://www.dropbox.com/developers/core/start/python)
-* log to file and console: [example](http://stackoverflow.com/questions/4675728/redirect-stdout-to-a-file-in-python)
-* cron
-
-### Licence
+## Licence
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">packtpub-crawler</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/niqdev/packtpub-crawler" property="cc:attributionName" rel="cc:attributionURL">niqdev</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.<br />Based on a work at <a xmlns:dct="http://purl.org/dc/terms/" href="https://github.com/niqdev/packtpub-crawler" rel="dct:source">https://github.com/niqdev/packtpub-crawler</a>.
 

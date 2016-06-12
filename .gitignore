@@ -1,20 +1,14 @@
-#macosx
+*~
 .DS_Store
 
-#ide
 .idea
 *.iml
 
-#python
 *.pyc
 
-#node
-node_modules/
-
-#config
 config/prod.cfg
 config/client_secrets.json
 config/auth_token.json
 
-#download folder
 ebooks/
+node_modules/
