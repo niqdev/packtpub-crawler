@@ -61,6 +61,40 @@ class Drive(object):
         storage.put(credentials)
         log_info('[+] new credentials saved')
 
+    def __create_folder(self): #Create folder with provided name
+        try: #Check default folder name
+            default_folder_name = self.__config.get('drive', 'drive.default_folder')
+        except:
+            default_folder_name = 'packtpub'
+
+        metadata = {
+            'title': default_folder_name,
+            'mimeType' : 'application/vnd.google-apps.folder'
+        }
+        folder = self.__drive_service.files().insert(body = metadata).execute()
+        self.__config.set('drive', 'drive.upload_folder', folder['id'])
+        log_success('[+] creating new directory...')
+        print '[+] updating folder permissions...'
+        permissions = {
+            'role': 'reader',
+            'type': 'anyone',
+            'value': self.__config.get('drive', 'drive.gmail')
+        }
+        self.__drive_service.permissions().insert(fileId=folder['id'], body=permissions).execute()
+        log_dict({'folder_name':  default_folder_name,
+                  'id': folder['id'],})
+                  #'share_link': folder['webContentLink']}) #TODO Fix
+        log_success('[+] Please add this line after [drive] in your configuration file:')
+        log_info('drive.upload_folder=' + folder.get('id'))
+
+        return folder.get('id') #Return folder object ID
+        
+    def __get_folder(self): #Get folder name settings
+        try:
+            return self.__config.get('drive', 'drive.upload_folder')
+        except:
+            return self.__create_folder() #new folder ID
+
     def __insert_file(self):
         print '[+] uploading file...'
         media_body = MediaFileUpload(
@@ -68,12 +102,13 @@ class Drive(object):
         body = {
             'title': self.info['name'],
             'description': 'uploaded with packtpub-crawler',
-            'mimeType': self.info['mime_type']
+            'mimeType': self.info['mime_type'],
+            'parents': [{'id': self.__get_folder()}]
         }
         file = self.__drive_service.files().insert(body=body, media_body=media_body).execute()
         # log_dict(file)
 
-        print '\b[+] updating file permissions...'
+        print '[+] updating file permissions...'
         permissions = {
             'role': 'reader',
             'type': 'anyone',
