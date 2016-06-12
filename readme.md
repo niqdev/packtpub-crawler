@@ -125,20 +125,25 @@ python script/spider.py --config config/prod.cfg --upload drive --notify
 ```
 
 #### Heroku setup
+Create a new branch
 ```
-# create a new branch
 git checkout -b heroku-scheduler
+```
 
-# update .gitignore and commit your changes
-(remove)
+Update the .gitignore and commit your changes
+```bash
+# remove
 config/prod.cfg
 config/client_secrets.json
 config/auth_token.json
-(add)
+# add
 dev/
 config/dev.cfg
 config/prod_example.cfg
+```
 
+Create, config and deploy the scheduler
+```bash
 heroku login
 # create a new app
 heroku create APP_NAME
@@ -148,20 +153,20 @@ heroku git:remote -a APP_NAME
 # add scheduler (requires account verification) 
 heroku addons:create scheduler:standard
 
-# config job from browser: Free/Daily/Hour/Command - python ./script/scheduler.py
+# config job in browser: Free/Daily/Hour/Command - python ./script/scheduler.py
 heroku addons:open scheduler
 
 # deploy your app
 git push -u heroku heroku-scheduler:master
 heroku ps:scale clock=1
 
-# verify if everything works fine
+# verify that everything works fine
 heroku ps
 heroku logs --ps clock.1
 heroku logs --tail
 ```
 
-Update `script/scheduler.py` with your own schedule preferences.
+Update `script/scheduler.py` with your own preferences.
 
 More info about Heroku [Scheduler](https://devcenter.heroku.com/articles/scheduler), [Clock Processes](https://devcenter.heroku.com/articles/clock-processes-python), [Add-on](https://elements.heroku.com/addons/scheduler) and [APScheduler](http://apscheduler.readthedocs.io/en/latest/userguide.html)
 
