@@ -4,15 +4,13 @@ import shutil
 
 sched = BlockingScheduler()
 
-#@sched.scheduled_job('cron', hour=11)
+#@sched.scheduled_job('interval', minutes=5)
 
-@sched.scheduled_job('interval', minutes=2)
+@sched.scheduled_job('cron', hour=9)
 def scheduled_job():
-    print(os.listdir(os.curdir))
-    shutil.rmtree('./ebooks', ignore_errors=True)
-    print(os.listdir(os.curdir))
-
     print('New job: packtpub-crawler')
+    #print(os.listdir(os.curdir))
+    shutil.rmtree('./ebooks', ignore_errors=True)
     os.system('python script/spider.py --config config/prod.cfg --upload drive --notify')
 
 sched.start()

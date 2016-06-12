@@ -104,7 +104,8 @@ Documentation: [OAuth](https://developers.google.com/api-client-library/python/g
 
 To *send* a notification via email using Gmail you should:
 
-* Allow ["less secure apps"](https://www.google.com/settings/security/lesssecureapps) on your account
+* Allow ["less secure apps"](https://www.google.com/settings/security/lesssecureapps) and ["DisplayUnlockCaptcha"](https://accounts.google.com/DisplayUnlockCaptcha) on your account
+* If you can't sign in to your email app due to `smtplib.SMTPAuthenticationError`, [here](https://support.google.com/mail/answer/78754) some suggestion
 * Change your Gmail credentials in the config file
 
 ```
@@ -136,9 +137,11 @@ dev/
 config/dev.cfg
 config/prod_example.cfg
 
-# create a new app
 heroku login
+# create a new app
 heroku create APP_NAME
+# or if you already have an existing app
+heroku git:remote -a APP_NAME
 
 # add scheduler (requires account verification) 
 heroku addons:create scheduler:standard
