@@ -6,7 +6,7 @@ sched = BlockingScheduler()
 
 #@sched.scheduled_job('interval', minutes=5)
 
-@sched.scheduled_job('cron', hour=9)
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=10)
 def scheduled_job():
     print('New job: packtpub-crawler')
     #print(os.listdir(os.curdir))
