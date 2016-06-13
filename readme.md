@@ -44,15 +44,9 @@ python script/spider.py --config config/prod.cfg --all --extras --upload drive
 
 Before you start you should
 
-* verify that your currently installed version of Python is **2.x** with `python --version`
-* install all the dependencies (you might need *sudo* privilege)
-
-```bash
-# install all dependencies
-pip install -r requirements.txt
-```
-
+* Verify that your currently installed version of Python is **2.x** with `python --version`
 * Clone the repository `git clone https://github.com/niqdev/packtpub-crawler.git`
+* Install all the dependencies (you might need *sudo* privilege) `pip install -r requirements.txt`
 * Create a [config](https://github.com/niqdev/packtpub-crawler/blob/master/config/prod_example.cfg) file `cp config/prod_example.cfg config/prod.cfg`
 * Change your Packtpub credentials in the config file
 ```
@@ -125,12 +119,13 @@ python script/spider.py --config config/prod.cfg --upload drive --notify
 ```
 
 #### Heroku setup
+
 Create a new branch
 ```
 git checkout -b heroku-scheduler
 ```
 
-Update the .gitignore and commit your changes
+Update the `.gitignore` and commit your changes
 ```bash
 # remove
 config/prod.cfg
@@ -160,7 +155,7 @@ heroku addons:open scheduler
 git push -u heroku heroku-scheduler:master
 heroku ps:scale clock=1
 
-# verify that everything works fine
+# check that everything works fine
 heroku ps
 heroku logs --ps clock.1
 heroku logs --tail
