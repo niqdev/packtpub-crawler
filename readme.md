@@ -155,10 +155,11 @@ heroku addons:open scheduler
 git push -u heroku heroku-scheduler:master
 heroku ps:scale clock=1
 
-# check that everything works fine
+# useful commands
 heroku ps
 heroku logs --ps clock.1
 heroku logs --tail
+heroku run bash
 ```
 
 Update `script/scheduler.py` with your own preferences.
