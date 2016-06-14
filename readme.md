@@ -145,12 +145,6 @@ heroku create APP_NAME
 # or if you already have an existing app
 heroku git:remote -a APP_NAME
 
-# add scheduler (requires account verification) 
-heroku addons:create scheduler:standard
-
-# config job in browser: Free/Daily/Hour/Command - python ./script/scheduler.py
-heroku addons:open scheduler
-
 # deploy your app
 git push -u heroku heroku-scheduler:master
 heroku ps:scale clock=1
