@@ -101,7 +101,7 @@ Documentation: [OAuth](https://developers.google.com/api-client-library/python/g
 To *send* a notification via email using Gmail you should:
 
 * Allow ["less secure apps"](https://www.google.com/settings/security/lesssecureapps) and ["DisplayUnlockCaptcha"](https://accounts.google.com/DisplayUnlockCaptcha) on your account
-* [Troubleshooting](https://support.google.com/mail/answer/78754) if you can't sign in to your email app due to `smtplib.SMTPAuthenticationError`
+* [Troubleshoot](https://support.google.com/mail/answer/78754) sign-in problems and [examples](http://stackoverflow.com/questions/10147455/how-to-send-an-email-with-gmail-as-provider-using-python)
 * Change your Gmail credentials in the config file
 
 ```
