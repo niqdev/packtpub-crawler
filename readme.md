@@ -4,7 +4,6 @@
 
 This crawler automates the following step:
 
-* grab the hidden form parameters
 * access to private account
 * claim the daily free eBook
 * parse title, description and useful information
@@ -175,10 +174,6 @@ and test the crawler with
 python script/spider.py --dev --config config/dev.cfg --all
 ```
 
-## Licence
-
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">packtpub-crawler</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/niqdev/packtpub-crawler" property="cc:attributionName" rel="cc:attributionURL">niqdev</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.<br />Based on a work at <a xmlns:dct="http://purl.org/dc/terms/" href="https://github.com/niqdev/packtpub-crawler" rel="dct:source">https://github.com/niqdev/packtpub-crawler</a>.
-
-#### Disclaimer
+### Disclaimer
 
 This project is just a Proof of Concept and not intended for any illegal usage. I'm not responsible for any damage or abuse, use it at your own risk.
