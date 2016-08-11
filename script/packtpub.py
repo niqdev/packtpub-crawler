@@ -138,7 +138,7 @@ class Packpub(object):
         directory = self.__config.get('path', 'path.ebooks')
         for download in downloads_info:
             self.info['paths'].append(
-                download_file(self.__session, download['url'], directory, download['filename']))
+                download_file(self.__session, download['url'], directory, download['filename'], self.__headers))
 
     def download_extras(self):
         """
@@ -148,11 +148,11 @@ class Packpub(object):
 
         url_image = self.info['url_image']
         filename = self.info['filename'] + '_' + split(url_image)[1]
-        self.info['paths'].append(download_file(self.__session, url_image, directory, filename))
+        self.info['paths'].append(download_file(self.__session, url_image, directory, filename, self.__headers))
 
         if 'url_source_code' in self.info:
             self.info['paths'].append(download_file(self.__session, self.info['url_source_code'], directory,
-                self.info['filename'] + '.zip'))
+                self.info['filename'] + '.zip', self.__headers))
 
     def set_debug(self):
         self.__debug = True
