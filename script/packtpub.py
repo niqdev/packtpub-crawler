@@ -3,6 +3,8 @@ import re
 from os.path import split
 from utils import make_soup, wait, download_file
 from logs import *
+import time
+import os
 
 class Packpub(object):
     """
@@ -15,6 +17,7 @@ class Packpub(object):
         self.__url_base = self.__config.get('url', 'url.base')
         self.__headers = self.__init_headers()
         self.__session = requests.Session()
+        self.__debug = False
         self.info = {
             'paths': []
         }
@@ -30,6 +33,12 @@ class Packpub(object):
 
     def __log_response(self, response, method='GET', detail=False):
         print '[-] {0} {1} | {2}'.format(method, response.url, response.status_code)
+        if self.__debug:
+            print '[+] Response dumped.'
+            self.__debuglog.write("\n\n[+] ==============\n[+] Response dump.")
+            self.__debuglog.write("\n[+] ==============\n[*] Content:\n")
+            self.__debuglog.write('[-] {0} {1} | {2}'.format(method, response.url, response.status_code) + "\n\n")
+            self.__debuglog.write(response.content)
         if detail:
             print '[-] cookies:'
             log_dict(requests.utils.dict_from_cookiejar(self.__session.cookies))
@@ -56,11 +65,14 @@ class Packpub(object):
         data['email'] = self.__config.get('credential', 'credential.email')
         data['password'] = self.__config.get('credential', 'credential.password')
         data['op'] = 'Login'
+        data['form_build_id'] = self.info['form_build_id']
+        data['form_id'] = self.info['form_id']
         # print '[-] data: {0}'.format(urllib.urlencode(data))
 
         url = self.__url_base
         response = None
         if self.__dev:
+            print "[+] dev mode\n"
             url += self.__config.get('url', 'url.loginPost')
             response = self.__session.get(url, headers=self.__headers, data=data)
             self.__log_response(response)
@@ -141,3 +153,11 @@ class Packpub(object):
         if 'url_source_code' in self.info:
             self.info['paths'].append(download_file(self.__session, self.info['url_source_code'], directory,
                 self.info['filename'] + '.zip', self.__headers))
+
+    def set_debug(self):
+        self.__debug = True
+        if not os.path.exists('log'):
+            os.makedirs('log')
+        filename = 'log/response_dump.log'+str(int(time.time()))
+        self.__debuglog = open(filename,'a')
+        print '[+] Debug flag is on. Respones will be dumped to: ' + filename

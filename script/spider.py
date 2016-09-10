@@ -23,6 +23,7 @@ def main():
     parser.add_argument('-u', '--upload', choices=[SERVICE_DRIVE, SERVICE_DROPBOX], help='upload to cloud')
     parser.add_argument('-a', '--archive', action='store_true', help='compress all file')
     parser.add_argument('-n', '--notify', action='store_true', help='notify via email')
+    parser.add_argument('-D', '--debug', action='store_true', help='only for debugging')
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-t', '--type', choices=['pdf', 'epub', 'mobi'],
@@ -36,8 +37,11 @@ def main():
         #ip_address()
         config = config_file(args.config)
         types = parse_types(args)
-
+        
         packpub = Packpub(config, args.dev)
+        if args.debug: #Dumping responses into files
+            packpub.set_debug()
+            
         packpub.run()
         log_json(packpub.info)
 
@@ -58,7 +62,7 @@ def main():
                 Notify(config, packpub.info, upload.info).send_email()
             else:
                 log_warn('[-] skip notification: missing upload info')
-
+            
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
     except Exception as e:
