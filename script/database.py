@@ -1,4 +1,5 @@
 from logs import *
+from firebase.firebase import FirebaseApplication, FirebaseAuthentication
 
 DB_FIREBASE = 'firebase'
 
@@ -17,11 +18,24 @@ class Database(object):
         """
         """
 
+        #log_json(self.__packpub_info)
+        #log_json(self.__upload_info)
+
         if self.__database_type == DB_FIREBASE:
             self.__store_firebase()
 
     def __store_firebase(self):
         """
         """
-        log_json(self.__packpub_info)
-        log_json(self.__upload_info)
+
+        # https://console.firebase.google.com/project/packtpub-crawler/settings/database
+
+        authentication = FirebaseAuthentication(self.__config.get('firebase', 'firebase.database_secret'), None)
+        print authentication.extra
+
+        user = authentication.get_user()
+        print user.firebase_auth_token
+
+        firebase = FirebaseApplication(self.__config.get('firebase', 'firebase.url'), authentication)
+        result = firebase.get(self.__config.get('firebase', 'firebase.path'), None)
+        print result['a']
