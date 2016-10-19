@@ -10,8 +10,8 @@ This crawler automates the following step:
 * download favorite format *.pdf .epub .mobi*
 * download source code and book cover
 * upload files to Google Drive
-* notify via email
 * store data on Firebase
+* notify via email
 * schedule daily job on Heroku
 
 ### Default command
