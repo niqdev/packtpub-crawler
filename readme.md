@@ -78,7 +78,7 @@ drive.client_secrets=config/client_secrets.json
 drive.gmail=GOOGLE_DRIVE@gmail.com
 ```
 
-Now you should be able to upload to Drive your eBook
+Now you should be able to upload your eBook to Drive
 ```
 python script/spider.py --config config/prod.cfg --upload drive
 ```
@@ -107,7 +107,7 @@ firebase.database_secret=DATABASE_SECRET
 firebase.url=https://PROJECT_NAME.firebaseio.com
 ```
 
-Now you should be able to store on Firebase your eBook
+Now you should be able to store your eBook details on Firebase
 ```
 python script/spider.py --config config/prod.cfg --upload drive --store firebase
 ```
