@@ -1,5 +1,6 @@
 from logs import *
 from firebase.firebase import FirebaseApplication, FirebaseAuthentication
+import datetime
 
 DB_FIREBASE = 'firebase'
 
@@ -11,15 +12,17 @@ class Database(object):
     def __init__(self, config, database_type, packpub_info, upload_info):
         self.__config = config
         self.__database_type = database_type
-        self.__packpub_info = packpub_info
-        self.__upload_info = upload_info
+
+        data = packpub_info.copy()
+        data['datetime'] = datetime.datetime.utcnow().isoformat()
+        data.pop('paths', None)
+        data.update(upload_info)
+        self.__data = data
 
     def store(self):
         """
         """
-
-        #log_json(self.__packpub_info)
-        #log_json(self.__upload_info)
+        #log_json(self.__data)
 
         if self.__database_type == DB_FIREBASE:
             self.__store_firebase()
@@ -28,14 +31,12 @@ class Database(object):
         """
         """
 
-        # https://console.firebase.google.com/project/packtpub-crawler/settings/database
-
         authentication = FirebaseAuthentication(self.__config.get('firebase', 'firebase.database_secret'), None)
-        print authentication.extra
-
-        user = authentication.get_user()
-        print user.firebase_auth_token
+        #user = authentication.get_user()
+        #print authentication.extra
+        #print user.firebase_auth_token
 
         firebase = FirebaseApplication(self.__config.get('firebase', 'firebase.url'), authentication)
-        result = firebase.get(self.__config.get('firebase', 'firebase.path'), None)
-        print result['a']
+        result = firebase.post(self.__config.get('firebase', 'firebase.path'), self.__data)
+
+        log_success('[+] Stored on firebase: {0}'.format(result['name']))
