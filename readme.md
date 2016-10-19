@@ -11,17 +11,16 @@ This crawler automates the following step:
 * download source code and book cover
 * upload files to Google Drive
 * notify via email
+* store data on Firebase
 * schedule daily job on Heroku
 
-## How to
-
-#### Default command
+### Default command
 ```bash
-# upload pdf to drive and notify via email
-python script/spider.py -c config/prod.cfg -u drive -n
+# upload pdf to drive, store data and notify via email
+python script/spider.py -c config/prod.cfg -u drive -s firebase -n
 ```
 
-#### Other options
+### Other options
 ```bash
 # download all format
 python script/spider.py --config config/prod.cfg --all
@@ -39,7 +38,7 @@ python script/spider.py -c config/prod.cfg -t epub --upload drive
 python script/spider.py --config config/prod.cfg --all --extras --upload drive
 ```
 
-#### Basic setup
+### Basic setup
 
 Before you start you should
 
@@ -59,7 +58,7 @@ Now you should be able to claim and download your first eBook
 python script/spider.py --config config/prod.cfg
 ```
 
-#### Upload setup
+### Upload setup
 
 From documentation, Drive API requires OAuth2.0 for authentication, so to upload files you should:
 
@@ -95,7 +94,25 @@ drive.upload_folder=FOLDER_ID
 
 Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/v3/web/quickstart/python), [example](https://github.com/googledrive/python-quickstart) and [permissions](https://developers.google.com/drive/v2/reference/permissions)
 
-#### Notification setup
+### Database setup
+
+Create a new Firebase [project](https://console.firebase.google.com/), copy the database secret from your settings
+```
+https://console.firebase.google.com/project/PROJECT_NAME/settings/database
+```
+and update the configs
+```
+[firebase]
+firebase.database_secret=DATABASE_SECRET
+firebase.url=https://PROJECT_NAME.firebaseio.com
+```
+
+Now you should be able to store on Firebase your eBook
+```
+python script/spider.py --config config/prod.cfg --upload drive --store firebase
+```
+
+### Notification setup
 
 To *send* a notification via email using Gmail you should:
 
@@ -117,7 +134,7 @@ Now you should be able to notify your accounts
 python script/spider.py --config config/prod.cfg --upload drive --notify
 ```
 
-#### Heroku setup
+### Heroku setup
 
 Create a new branch
 ```
@@ -159,12 +176,12 @@ Update `script/scheduler.py` with your own preferences.
 
 More info about Heroku [Scheduler](https://devcenter.heroku.com/articles/scheduler), [Clock Processes](https://devcenter.heroku.com/articles/clock-processes-python), [Add-on](https://elements.heroku.com/addons/scheduler) and [APScheduler](http://apscheduler.readthedocs.io/en/latest/userguide.html)
 
-#### Cron setup
+### Cron setup
 ```
 TODO
 ```
 
-#### Development (only for spidering)
+### Development (only for spidering)
 Run a simple static server with
 ```
 node dev/server.js
