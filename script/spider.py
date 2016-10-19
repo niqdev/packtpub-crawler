@@ -2,6 +2,7 @@ import argparse
 from utils import ip_address, config_file
 from packtpub import Packpub
 from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX
+from database import Database, DB_FIREBASE
 from notify import Notify
 from logs import *
 
@@ -15,7 +16,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='Download FREE eBook every day from www.packtpub.com',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        version='1.0')
+        version='1.2.0')
 
     parser.add_argument('-c', '--config', required=True, help='configuration file')
     parser.add_argument('-d', '--dev', action='store_true', help='only for development')
@@ -23,6 +24,7 @@ def main():
     parser.add_argument('-u', '--upload', choices=[SERVICE_DRIVE, SERVICE_DROPBOX], help='upload to cloud')
     parser.add_argument('-a', '--archive', action='store_true', help='compress all file')
     parser.add_argument('-n', '--notify', action='store_true', help='notify via email')
+    parser.add_argument('-s', '--store', choices=[DB_FIREBASE], help='store info')
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-t', '--type', choices=['pdf', 'epub', 'mobi'],
@@ -53,11 +55,14 @@ def main():
             upload = Upload(config, args.upload)
             upload.run(packpub.info['paths'])
 
-        if args.notify:
-            if upload is not None:
+        if upload is None:
+            log_warn('[-] skip store info: missing upload info')
+            log_warn('[-] skip notification: missing upload info')
+        else:
+            if args.store is not None:
+                Database(config, args.store, packpub.info, upload.info).store()
+            if args.notify:
                 Notify(config, packpub.info, upload.info).send_email()
-            else:
-                log_warn('[-] skip notification: missing upload info')
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
