@@ -1,0 +1,7 @@
+version: '2'
+services:
+  packtpub-crawler:
+    build: .
+    entrypoint: /entrypoint.sh
+    volumes:
+      - .:/packtpub-crawler
