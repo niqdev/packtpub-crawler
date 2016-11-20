@@ -13,6 +13,7 @@ This crawler automates the following step:
 * store data on Firebase
 * notify via email
 * schedule daily job on Heroku
+* docker support
 
 ### Default command
 ```bash
