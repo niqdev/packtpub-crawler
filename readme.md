@@ -12,8 +12,7 @@ This crawler automates the following step:
 * upload files to Google Drive
 * store data on Firebase
 * notify via email
-* schedule daily job on Heroku
-* docker support
+* schedule daily job on Heroku or with [Docker (TODO)](https://github.com/niqdev/packtpub-crawler/issues/18)
 
 ### Default command
 ```bash
@@ -177,12 +176,8 @@ Update `script/scheduler.py` with your own preferences.
 
 More info about Heroku [Scheduler](https://devcenter.heroku.com/articles/scheduler), [Clock Processes](https://devcenter.heroku.com/articles/clock-processes-python), [Add-on](https://elements.heroku.com/addons/scheduler) and [APScheduler](http://apscheduler.readthedocs.io/en/latest/userguide.html)
 
-### Cron setup
-```
-TODO
-```
+### Docker setup [TODO](https://github.com/niqdev/packtpub-crawler/issues/18)
 
-### Docker setup
 * Install docker and docker-compose
 * Clone the repository `git clone https://github.com/niqdev/packtpub-crawler.git`
 * Create a [config](https://github.com/niqdev/packtpub-crawler/blob/master/config/prod_example.cfg) file `cp config/prod_example.cfg config/prod.cfg`
