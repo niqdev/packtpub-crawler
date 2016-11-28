@@ -12,7 +12,7 @@ This crawler automates the following step:
 * upload files to Google Drive
 * store data on Firebase
 * notify via email
-* schedule daily job on Heroku or with [Docker (TODO)](https://github.com/niqdev/packtpub-crawler/issues/18)
+* schedule daily job on Heroku or with Docker
 
 ### Default command
 ```bash
@@ -176,7 +176,7 @@ Update `script/scheduler.py` with your own preferences.
 
 More info about Heroku [Scheduler](https://devcenter.heroku.com/articles/scheduler), [Clock Processes](https://devcenter.heroku.com/articles/clock-processes-python), [Add-on](https://elements.heroku.com/addons/scheduler) and [APScheduler](http://apscheduler.readthedocs.io/en/latest/userguide.html)
 
-### Docker setup [TODO](https://github.com/niqdev/packtpub-crawler/issues/18)
+### Docker setup
 
 Build your image
 ```
@@ -192,15 +192,16 @@ docker run \
   python script/spider.py --config config/prod.cfg --upload drive
 ```
 
-TODO
-Run schedule daily job
+Run scheduled crawler in background
 ```
 docker run \
   --detach \
   --name my-packtpub-crawler \
   niqdev/packtpub-crawler:1.3.0
 
+# useful commands
 docker exec -i -t my-packtpub-crawler bash
+docker logs -f my-packtpub-crawler
 ```
 
 ### Development (only for spidering)
