@@ -178,19 +178,29 @@ More info about Heroku [Scheduler](https://devcenter.heroku.com/articles/schedul
 
 ### Docker setup [TODO](https://github.com/niqdev/packtpub-crawler/issues/18)
 
-* Install docker and docker-compose
-* Clone the repository `git clone https://github.com/niqdev/packtpub-crawler.git`
-* Create a [config](https://github.com/niqdev/packtpub-crawler/blob/master/config/prod_example.cfg) file `cp config/prod_example.cfg config/prod.cfg`
-* Change your Packtpub credentials in the config file
+Build your image
 ```
-[credential]
-credential.email=PACKTPUB_EMAIL
-credential.password=PACKTPUB_PASSWORD
+docker build -t niqdev/packtpub-crawler:1.3.0 .
 ```
 
-Now you should be able to claim and download your first eBook
+Run manually
 ```
-docker-compose run packtpub-crawler --config config/prod.cfg
+docker run \
+  --rm \
+  --name my-packtpub-crawler \
+  niqdev/packtpub-crawler:1.3.0 \
+  python script/spider.py --config config/prod.cfg --upload drive
+```
+
+TODO
+Run schedule daily job
+```
+docker run \
+  --detach \
+  --name my-packtpub-crawler \
+  niqdev/packtpub-crawler:1.3.0
+
+docker exec -i -t my-packtpub-crawler bash
 ```
 
 ### Development (only for spidering)
