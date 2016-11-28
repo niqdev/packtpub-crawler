@@ -1,13 +1,11 @@
 FROM python:2.7
 
-MAINTAINER Martin Kuchynar <matokuchy@gmail.com>
+WORKDIR /packtpub-crawler
 
-COPY requirements.txt /requirements.txt
-RUN pip install -r /requirements.txt
+COPY script script
+COPY config config
+COPY requirements.txt requirements.txt
 
-ADD entrypoint.sh /
-RUN chmod +x /entrypoint.sh
+RUN pip install -r requirements.txt
 
-ENTRYPOINT ["/entrypoint.sh"]
-
-CMD [ "/bin/bash" ]
+CMD ["python", "/packtpub-crawler/script/scheduler.py"]

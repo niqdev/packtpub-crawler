@@ -12,7 +12,7 @@ This crawler automates the following step:
 * upload files to Google Drive
 * store data on Firebase
 * notify via email
-* schedule daily job on Heroku or with [Docker (TODO)](https://github.com/niqdev/packtpub-crawler/issues/18)
+* schedule daily job on Heroku or with Docker
 
 ### Default command
 ```bash
@@ -176,21 +176,32 @@ Update `script/scheduler.py` with your own preferences.
 
 More info about Heroku [Scheduler](https://devcenter.heroku.com/articles/scheduler), [Clock Processes](https://devcenter.heroku.com/articles/clock-processes-python), [Add-on](https://elements.heroku.com/addons/scheduler) and [APScheduler](http://apscheduler.readthedocs.io/en/latest/userguide.html)
 
-### Docker setup [TODO](https://github.com/niqdev/packtpub-crawler/issues/18)
+### Docker setup
 
-* Install docker and docker-compose
-* Clone the repository `git clone https://github.com/niqdev/packtpub-crawler.git`
-* Create a [config](https://github.com/niqdev/packtpub-crawler/blob/master/config/prod_example.cfg) file `cp config/prod_example.cfg config/prod.cfg`
-* Change your Packtpub credentials in the config file
+Build your image
 ```
-[credential]
-credential.email=PACKTPUB_EMAIL
-credential.password=PACKTPUB_PASSWORD
+docker build -t niqdev/packtpub-crawler:1.3.0 .
 ```
 
-Now you should be able to claim and download your first eBook
+Run manually
 ```
-docker-compose run packtpub-crawler --config config/prod.cfg
+docker run \
+  --rm \
+  --name my-packtpub-crawler \
+  niqdev/packtpub-crawler:1.3.0 \
+  python script/spider.py --config config/prod.cfg --upload drive
+```
+
+Run scheduled crawler in background
+```
+docker run \
+  --detach \
+  --name my-packtpub-crawler \
+  niqdev/packtpub-crawler:1.3.0
+
+# useful commands
+docker exec -i -t my-packtpub-crawler bash
+docker logs -f my-packtpub-crawler
 ```
 
 ### Development (only for spidering)
