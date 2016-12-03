@@ -33,11 +33,11 @@ class ScpUpload(object):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         # get config settings
-        host = self.__config.get('drive', 'scp.host')
-        user = self.__config.get('drive', 'scp.user')
-        password = self.__config.get('drive', 'scp.password')
-        timeout = self.__config.get('drive', 'scp.timeout')
-        remotePath = self.__config.get('drive', 'scp.path')
+        host = self.__config.get('scp', 'scp.host')
+        user = self.__config.get('scp', 'scp.user')
+        password = self.__config.get('scp', 'scp.password')
+        timeout = self.__config.get('scp', 'scp.timeout')
+        remotePath = self.__config.get('scp', 'scp.path')
 
         ssh.connect(host, username=user, password=password)
         scpclient = SCPClient(ssh.get_transport(), socket_timeout=float(timeout))
