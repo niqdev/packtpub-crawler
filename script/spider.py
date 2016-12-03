@@ -1,7 +1,7 @@
 import argparse
 from utils import ip_address, config_file
 from packtpub import Packpub
-from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX
+from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP
 from database import Database, DB_FIREBASE
 from notify import Notify
 from logs import *
@@ -21,7 +21,7 @@ def main():
     parser.add_argument('-c', '--config', required=True, help='configuration file')
     parser.add_argument('-d', '--dev', action='store_true', help='only for development')
     parser.add_argument('-e', '--extras', action='store_true', help='download source code (if exists) and book cover')
-    parser.add_argument('-u', '--upload', choices=[SERVICE_DRIVE, SERVICE_DROPBOX], help='upload to cloud')
+    parser.add_argument('-u', '--upload', choices=[SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP], help='upload to cloud')
     parser.add_argument('-a', '--archive', action='store_true', help='compress all file')
     parser.add_argument('-n', '--notify', action='store_true', help='notify via email')
     parser.add_argument('-s', '--store', choices=[DB_FIREBASE], help='store info')

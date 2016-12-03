@@ -1,8 +1,10 @@
 from drive import Drive
+from scpUpload import ScpUpload
 from logs import *
 
 SERVICE_DRIVE = 'drive'
 SERVICE_DROPBOX = 'DROPBOX'
+SERVICE_SCP = 'scp'
 
 class Upload(object):
     """
@@ -18,6 +20,8 @@ class Upload(object):
             self.service = Drive(config)
         elif service_type == SERVICE_DROPBOX:
             raise NotImplementedError('not implemented yet!')
+        elif service_type == SERVICE_SCP:
+            self.service = ScpUpload(config)
 
     def run(self, paths):
         """
