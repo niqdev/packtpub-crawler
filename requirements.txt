@@ -9,3 +9,9 @@ requests==2.10.0
 termcolor==1.1.0
 urllib3==1.15.1
 python-firebase==1.2
+cryptography==1.6
+pysftp==0.2.9
+enum==0.4.6
+cffi==1.9.1
+ipaddress==1.0.17
+scp==0.10.2
