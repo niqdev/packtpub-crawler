@@ -27,7 +27,7 @@ class Drive(object):
             'name': file_path.split('/')[-1],
             'mime_type': magic.from_file(file_path, mime=True),
         }
-        log_info('[+] new file upload:')
+        log_info('[+] new file upload on Drive:')
         # log_dict(self.file_info)
 
     def __init_service(self):

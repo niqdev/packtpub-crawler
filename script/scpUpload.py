@@ -1,6 +1,4 @@
 from os.path import exists
-import webbrowser
-import httplib2
 import magic
 from utils import thread_loader
 from logs import *
@@ -24,7 +22,7 @@ class ScpUpload(object):
             'name': file_path.split('/')[-1],
             'mime_type': magic.from_file(file_path, mime=True),
         }
-        log_info('[+] new file upload:')
+        log_info('[+] new file upload via scp:')
         # log_dict(self.file_info)
 
     def __insert_file(self):
@@ -37,11 +35,11 @@ class ScpUpload(object):
         user = self.__config.get('scp', 'scp.user')
         password = self.__config.get('scp', 'scp.password')
         timeout = self.__config.get('scp', 'scp.timeout')
-        remotePath = self.__config.get('scp', 'scp.path')
+        self.info['upload_path'] = self.__config.get('scp', 'scp.path')
 
         ssh.connect(host, username=user, password=password)
         scpclient = SCPClient(ssh.get_transport(), socket_timeout=float(timeout))
-        scpclient.put(self.info['path'], remotePath+self.info['name'])
+        scpclient.put(self.info['path'], self.info['upload_path'] + self.info['name'])
 
     def upload(self, file_path):
         self.__guess_info(file_path)

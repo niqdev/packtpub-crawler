@@ -9,7 +9,7 @@ This crawler automates the following step:
 * parse title, description and useful information
 * download favorite format *.pdf .epub .mobi*
 * download source code and book cover
-* upload files to Google Drive
+* upload files to Google Drive or via scp
 * store data on Firebase
 * notify via email
 * schedule daily job on Heroku or with Docker
@@ -58,9 +58,9 @@ Now you should be able to claim and download your first eBook
 python script/spider.py --config config/prod.cfg
 ```
 
-### Upload setup
+### Drive
 
-From documentation, Drive API requires OAuth2.0 for authentication, so to upload files you should:
+From the documentation, Drive API requires OAuth2.0 for authentication, so to upload files you should:
 
 * Go to [Google APIs Console](https://code.google.com/apis/console) and create a new [Drive](https://console.developers.google.com/apis/api/drive/overview) project named **PacktpubDrive**
 * On *API manager > Overview* menu
@@ -94,7 +94,28 @@ drive.upload_folder=FOLDER_ID
 
 Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/v3/web/quickstart/python), [example](https://github.com/googledrive/python-quickstart) and [permissions](https://developers.google.com/drive/v2/reference/permissions)
 
-### Database setup
+### Scp
+
+To upload your eBook via `scp` on a remote server update the configs
+
+```
+[scp]
+scp.host=SCP_HOST
+scp.user=SCP_USER
+scp.password=SCP_PASSWORD
+scp.path=SCP_UPLOAD_PATH
+```
+
+Now you should be able to upload your eBook
+```
+python script/spider.py --config config/prod.cfg --upload scp
+```
+
+Note:
+* the destination folder `scp.path` on the remote server must exists in advance
+* the option `--upload scp` is incompatible with `--store` and `--notify`
+
+### Firebase
 
 Create a new Firebase [project](https://console.firebase.google.com/), copy the database secret from your settings
 ```
@@ -112,7 +133,7 @@ Now you should be able to store your eBook details on Firebase
 python script/spider.py --config config/prod.cfg --upload drive --store firebase
 ```
 
-### Notification setup
+### Email notification
 
 To *send* a notification via email using Gmail you should:
 
@@ -134,7 +155,7 @@ Now you should be able to notify your accounts
 python script/spider.py --config config/prod.cfg --upload drive --notify
 ```
 
-### Heroku setup
+### Heroku
 
 Create a new branch
 ```
@@ -176,7 +197,7 @@ Update `script/scheduler.py` with your own preferences.
 
 More info about Heroku [Scheduler](https://devcenter.heroku.com/articles/scheduler), [Clock Processes](https://devcenter.heroku.com/articles/clock-processes-python), [Add-on](https://elements.heroku.com/addons/scheduler) and [APScheduler](http://apscheduler.readthedocs.io/en/latest/userguide.html)
 
-### Docker setup
+### Docker
 
 Build your image
 ```

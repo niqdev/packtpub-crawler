@@ -55,7 +55,7 @@ def main():
             upload = Upload(config, args.upload)
             upload.run(packpub.info['paths'])
 
-        if upload is None:
+        if upload is not SERVICE_DRIVE:
             log_warn('[-] skip store info: missing upload info')
             log_warn('[-] skip notification: missing upload info')
         else:
