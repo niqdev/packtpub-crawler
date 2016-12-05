@@ -11,7 +11,7 @@ This crawler automates the following step:
 * download source code and book cover
 * upload files to Google Drive or via scp
 * store data on Firebase
-* notify via email
+* notify via email, IFTTT or Join
 * schedule daily job on Heroku or with Docker
 
 ### Default command
