@@ -1,7 +1,7 @@
-from gmail import Gmail
-from ifttt import Ifttt
-from join import Join
+from notification.gmail import Gmail
+from notification.ifttt import Ifttt
 from logs import *
+from notification.join import Join
 
 SERVICE_GMAIL = 'gmail'
 SERVICE_IFTTT = 'ifttt'
