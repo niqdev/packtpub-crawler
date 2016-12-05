@@ -63,17 +63,12 @@ def main():
             Database(config, args.store, packpub.info, upload.info).store()
 
         if args.notify:
-            if args.notify is None:
-                service = SERVICE_GMAIL # for backwards compatibility
-            else:
-                service = args.notify
-
             uploadInfo = None
 
             if upload is not None:
                 uploadInfo = upload.info
 
-            Notify(config, packpub.info, uploadInfo, service).run()
+            Notify(config, packpub.info, uploadInfo, args.notify).run()
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
