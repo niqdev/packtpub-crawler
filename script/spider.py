@@ -4,10 +4,9 @@ import argparse
 from utils import ip_address, config_file
 from packtpub import Packpub
 from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP
-from notify import Notify, SERVICE_GMAIL, SERVICE_IFTTT
 from database import Database, DB_FIREBASE
-from notify import Notify
 from logs import *
+from notify import Notify, SERVICE_GMAIL, SERVICE_IFTTT, SERVICE_JOIN
 
 def parse_types(args):
     if args.types is None:
@@ -26,7 +25,7 @@ def main():
     parser.add_argument('-e', '--extras', action='store_true', help='download source code (if exists) and book cover')
     parser.add_argument('-u', '--upload', choices=[SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP], help='upload to cloud')
     parser.add_argument('-a', '--archive', action='store_true', help='compress all file')
-    parser.add_argument('-n', '--notify', choices=[SERVICE_GMAIL, SERVICE_IFTTT], help='notify after download')
+    parser.add_argument('-n', '--notify', choices=[SERVICE_GMAIL, SERVICE_IFTTT, SERVICE_JOIN], help='notify after download')
     parser.add_argument('-s', '--store', choices=[DB_FIREBASE], help='store info')
 
     group = parser.add_mutually_exclusive_group()

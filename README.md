@@ -167,6 +167,18 @@ Now you should be able to trigger the applet
 python script/spider.py --config config/prod.cfg --notify ifttt
 ```
 
+### Join notification
+
+* Get the Join [Chrome extension](https://chrome.google.com/webstore/detail/join-by-joaoapps/flejfacjooompmliegamfbpjjdlhokhj) and/or [App](https://play.google.com/store/apps/details?id=com.joaomgcd.join)
+* You can find your device ids [here](https://joinjoaomgcd.appspot.com/)
+* (Optional) You can use multiple devices or groups (group.all, group.android, group.chrome, group.windows10, group.phone, group.tablet, group.pc) separated by comma
+* Change your Join credentials in the config file
+
+Now you should be able to trigger the applet
+```
+python script/spider.py --config config/prod.cfg --notify join
+```
+
 ### Heroku
 
 Create a new branch
