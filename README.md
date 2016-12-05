@@ -11,7 +11,7 @@ This crawler automates the following step:
 * download source code and book cover
 * upload files to Google Drive or via scp
 * store data on Firebase
-* notify via email
+* notify via email, IFTTT or Join
 * schedule daily job on Heroku or with Docker
 
 ### Default command
@@ -133,7 +133,7 @@ Now you should be able to store your eBook details on Firebase
 python script/spider.py --config config/prod.cfg --upload drive --store firebase
 ```
 
-### Email notification
+### Gmail notification
 
 To *send* a notification via email using Gmail you should:
 
@@ -142,17 +142,41 @@ To *send* a notification via email using Gmail you should:
 * Change your Gmail credentials in the config file
 
 ```
-[notify]
+[gmail]
 ...
-notify.username=EMAIL_USERNAME@gmail.com
-notify.password=EMAIL_PASSWORD
-notify.from=FROM_EMAIL@gmail.com
-notify.to=TO_EMAIL_1@gmail.com,TO_EMAIL_2@gmail.com
+gmail.username=EMAIL_USERNAME@gmail.com
+gmail.password=EMAIL_PASSWORD
+gmail.from=FROM_EMAIL@gmail.com
+gmail.to=TO_EMAIL_1@gmail.com,TO_EMAIL_2@gmail.com
 ```
 
 Now you should be able to notify your accounts
 ```
-python script/spider.py --config config/prod.cfg --upload drive --notify
+python script/spider.py --config config/prod.cfg --notify gmail
+```
+
+### IFTTT notification
+
+* Get an account on [IFTTT](https://ifttt.com)
+* Go to [your maker settings](https://ifttt.com/services/maker/settings) and activate the channel
+* Create a new applet with the trigger ["Receive a web request"](https://ifttt.com/channels/maker/triggers/1636368624-receive-a-web-request) and the event name "packtpub_downloaded" (default name, other names must be added to the config)
+* Change your IFTTT credentials in the config file
+
+Now you should be able to trigger the applet
+```
+python script/spider.py --config config/prod.cfg --notify ifttt
+```
+
+### Join notification
+
+* Get the Join [Chrome extension](https://chrome.google.com/webstore/detail/join-by-joaoapps/flejfacjooompmliegamfbpjjdlhokhj) and/or [App](https://play.google.com/store/apps/details?id=com.joaomgcd.join)
+* You can find your device ids [here](https://joinjoaomgcd.appspot.com/)
+* (Optional) You can use multiple devices or groups (group.all, group.android, group.chrome, group.windows10, group.phone, group.tablet, group.pc) separated by comma
+* Change your Join credentials in the config file
+
+Now you should be able to trigger the applet
+```
+python script/spider.py --config config/prod.cfg --notify join
 ```
 
 ### Heroku
