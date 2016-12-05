@@ -36,6 +36,9 @@ python script/spider.py -c config/prod.cfg -e
 # download and then upload to Drive (given the download url anyone can download it)
 python script/spider.py -c config/prod.cfg -t epub --upload drive
 python script/spider.py --config config/prod.cfg --all --extras --upload drive
+
+# download and notify: gmail|ifttt|join
+python script/spider.py -c config/prod.cfg --notify
 ```
 
 ### Basic setup
@@ -158,9 +161,15 @@ python script/spider.py --config config/prod.cfg --notify gmail
 ### IFTTT notification
 
 * Get an account on [IFTTT](https://ifttt.com)
-* Go to [your maker settings](https://ifttt.com/services/maker/settings) and activate the channel
-* Create a new applet with the trigger ["Receive a web request"](https://ifttt.com/channels/maker/triggers/1636368624-receive-a-web-request) and the event name "packtpub_downloaded" (default name, other names must be added to the config)
-* Change your IFTTT credentials in the config file
+* Go to your Maker [settings](https://ifttt.com/services/maker/settings) and activate the channel
+* [Create](https://ifttt.com/create) a new applet using the Maker service with the trigger "Receive a web request" and the event name "packtpub-crawler"
+* Change your IFTTT [key](https://internal-api.ifttt.com/maker) in the config file
+
+```
+[ifttt]
+ifttt.event_name=packtpub-crawler
+ifttt.key=IFTTT_MAKER_KEY
+```
 
 Now you should be able to trigger the applet
 ```
@@ -174,7 +183,13 @@ python script/spider.py --config config/prod.cfg --notify ifttt
 * (Optional) You can use multiple devices or groups (group.all, group.android, group.chrome, group.windows10, group.phone, group.tablet, group.pc) separated by comma
 * Change your Join credentials in the config file
 
-Now you should be able to trigger the applet
+```
+[join]
+join.device_ids=DEVICE_IDS_COMMA_SEPARATED_OR_GROUP_NAME
+join.api_key=API_KEY
+```
+
+Now you should be able to trigger the event
 ```
 python script/spider.py --config config/prod.cfg --notify join
 ```
@@ -225,7 +240,7 @@ More info about Heroku [Scheduler](https://devcenter.heroku.com/articles/schedul
 
 Build your image
 ```
-docker build -t niqdev/packtpub-crawler:1.4.0 .
+docker build -t niqdev/packtpub-crawler:1.5.0 .
 ```
 
 Run manually
@@ -233,8 +248,8 @@ Run manually
 docker run \
   --rm \
   --name my-packtpub-crawler \
-  niqdev/packtpub-crawler:1.4.0 \
-  python script/spider.py --config config/prod.cfg --upload drive
+  niqdev/packtpub-crawler:1.5.0 \
+  python script/spider.py --config config/prod.cfg --notify ifttt
 ```
 
 Run scheduled crawler in background
@@ -242,7 +257,7 @@ Run scheduled crawler in background
 docker run \
   --detach \
   --name my-packtpub-crawler \
-  niqdev/packtpub-crawler:1.4.0
+  niqdev/packtpub-crawler:1.5.0
 
 # useful commands
 docker exec -i -t my-packtpub-crawler bash
