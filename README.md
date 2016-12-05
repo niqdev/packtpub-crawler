@@ -152,7 +152,19 @@ gmail.to=TO_EMAIL_1@gmail.com,TO_EMAIL_2@gmail.com
 
 Now you should be able to notify your accounts
 ```
-python script/spider.py --config config/prod.cfg --upload drive --notify gmail
+python script/spider.py --config config/prod.cfg --notify gmail
+```
+
+### IFTTT notification
+
+* Get an account on [IFTTT](https://ifttt.com)
+* Go to [your maker settings](https://ifttt.com/services/maker/settings) and activate the channel
+* Create a new applet with the trigger ["Receive a web request"](https://ifttt.com/channels/maker/triggers/1636368624-receive-a-web-request) and the event name "packtpub_downloaded" (default name, other names must be added to the config)
+* Change your IFTTT credentials in the config file
+
+Now you should be able to trigger the applet
+```
+python script/spider.py --config config/prod.cfg --notify ifttt
 ```
 
 ### Heroku

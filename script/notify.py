@@ -1,4 +1,5 @@
 from gmail import Gmail
+from ifttt import Ifttt
 from logs import *
 
 SERVICE_GMAIL = 'gmail'
@@ -17,7 +18,7 @@ class Notify(object):
         if service_type == SERVICE_GMAIL:
             self.service = Gmail(config, packpub_info, upload_info)
         elif service_type == SERVICE_IFTTT:
-            raise NotImplementedError('not implemented yet!')
+            self.service = Ifttt(config, packpub_info, upload_info)
 
     def run(self):
         """
