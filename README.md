@@ -133,7 +133,7 @@ Now you should be able to store your eBook details on Firebase
 python script/spider.py --config config/prod.cfg --upload drive --store firebase
 ```
 
-### Email notification
+### Gmail notification
 
 To *send* a notification via email using Gmail you should:
 
@@ -142,17 +142,17 @@ To *send* a notification via email using Gmail you should:
 * Change your Gmail credentials in the config file
 
 ```
-[notify]
+[gmail]
 ...
-notify.username=EMAIL_USERNAME@gmail.com
-notify.password=EMAIL_PASSWORD
-notify.from=FROM_EMAIL@gmail.com
-notify.to=TO_EMAIL_1@gmail.com,TO_EMAIL_2@gmail.com
+gmail.username=EMAIL_USERNAME@gmail.com
+gmail.password=EMAIL_PASSWORD
+gmail.from=FROM_EMAIL@gmail.com
+gmail.to=TO_EMAIL_1@gmail.com,TO_EMAIL_2@gmail.com
 ```
 
 Now you should be able to notify your accounts
 ```
-python script/spider.py --config config/prod.cfg --upload drive --notify
+python script/spider.py --config config/prod.cfg --upload drive --notify gmail
 ```
 
 ### Heroku

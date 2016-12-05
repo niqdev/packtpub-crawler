@@ -1,7 +1,10 @@
+#!/bin/env python
+
 import argparse
 from utils import ip_address, config_file
 from packtpub import Packpub
 from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP
+from notify import Notify, SERVICE_GMAIL, SERVICE_IFTTT
 from database import Database, DB_FIREBASE
 from notify import Notify
 from logs import *
@@ -23,7 +26,7 @@ def main():
     parser.add_argument('-e', '--extras', action='store_true', help='download source code (if exists) and book cover')
     parser.add_argument('-u', '--upload', choices=[SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP], help='upload to cloud')
     parser.add_argument('-a', '--archive', action='store_true', help='compress all file')
-    parser.add_argument('-n', '--notify', action='store_true', help='notify via email')
+    parser.add_argument('-n', '--notify', choices=[SERVICE_GMAIL, SERVICE_IFTTT], help='notify after download')
     parser.add_argument('-s', '--store', choices=[DB_FIREBASE], help='store info')
 
     group = parser.add_mutually_exclusive_group()
@@ -57,12 +60,21 @@ def main():
 
         if upload is not SERVICE_DRIVE:
             log_warn('[-] skip store info: missing upload info')
-            log_warn('[-] skip notification: missing upload info')
-        else:
-            if args.store is not None:
-                Database(config, args.store, packpub.info, upload.info).store()
-            if args.notify:
-                Notify(config, packpub.info, upload.info).send_email()
+        elif args.store is not None:
+            Database(config, args.store, packpub.info, upload.info).store()
+
+        if args.notify:
+            if args.notify is None:
+                service = SERVICE_GMAIL # for backwards compatibility
+            else:
+                service = args.notify
+
+            uploadInfo = None
+
+            if upload is not None:
+                uploadInfo = upload.info
+
+            Notify(config, packpub.info, uploadInfo, service).run()
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
