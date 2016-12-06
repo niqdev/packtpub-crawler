@@ -124,7 +124,12 @@ class Packpub(object):
             for type in types]
 
         if self.__config.has_option('path', 'path.separate.extras'):
-            directory = self.__config.get('path', 'path.separate.ebooks') + '/' + self.info['title'] + ' - ' + self.info['author']
+            space = self.__config.get('path', 'path.separate.space')
+
+            if space == '?':
+                space = ' '
+
+            directory = self.__config.get('path', 'path.separate.ebooks') + '/' + self.info['title'].encode('ascii', 'ignore').replace(' ', space) + space + '-' + space + self.info['author'].encode('ascii', 'ignore').replace(' ', space)
         else:
             directory = self.__config.get('path', 'path.ebooks')
 
@@ -137,7 +142,12 @@ class Packpub(object):
         """
 
         if self.__config.has_option('path', 'path.separate.extras'):
-            directory = self.__config.get('path', 'path.separate.ebooks') + '/' + self.info['title'] + ' - ' + self.info['author'] + '/' +  self.__config.get('path', 'path.separate.extras')
+            space = self.__config.get('path', 'path.separate.space')
+
+            if space == '?':
+                space = ' '
+
+            directory = self.__config.get('path', 'path.separate.ebooks') + '/' + self.info['title'].encode('ascii', 'ignore').replace(' ', space) + space + '-' + space + self.info['author'].encode('ascii', 'ignore').replace(' ', space) + '/' +  self.__config.get('path', 'path.separate.extras')
         else:
             directory = self.__config.get('path', 'path.extras')
 
