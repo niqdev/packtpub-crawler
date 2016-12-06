@@ -123,10 +123,10 @@ class Packpub(object):
             filename=self.info['filename'] + '.' + type)
             for type in types]
 
-        directory = self.__config.get('path', 'path.ebooks')
-
-        if self.__config.get('path', 'path.separate') == "true":
-            directory = directory + '/' + self.info['title'] + ' - ' + self.info['author']
+        if self.__config.has_option('path', 'path.separate.extras'):
+            directory = self.__config.get('path', 'path.separate.ebooks') + '/' + self.info['title'] + ' - ' + self.info['author']
+        else:
+            directory = self.__config.get('path', 'path.ebooks')
 
         for download in downloads_info:
             self.info['paths'].append(
@@ -136,10 +136,10 @@ class Packpub(object):
         """
         """
 
-        directory = self.__config.get('path', 'path.extras')
-
-        if self.__config.get('path', 'path.separate') == "true":
-            directory = self.__config.get('path', 'path.ebooks') + '/' + self.info['title'] + ' - ' + self.info['author'] + '/' +  directory
+        if self.__config.has_option('path', 'path.separate.extras'):
+            directory = self.__config.get('path', 'path.separate.ebooks') + '/' + self.info['title'] + ' - ' + self.info['author'] + '/' +  self.__config.get('path', 'path.separate.extras')
+        else:
+            directory = self.__config.get('path', 'path.extras')
 
         url_image = self.info['url_image']
         filename = self.info['filename'] + '_' + split(url_image)[1]
