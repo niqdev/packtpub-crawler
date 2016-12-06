@@ -264,6 +264,11 @@ docker exec -i -t my-packtpub-crawler bash
 docker logs -f my-packtpub-crawler
 ```
 
+Alternatively you can pull from [Docker Hub](https://hub.docker.com/r/kuchy/packtpub-crawler/) this [fork](https://github.com/kuchy/packtpub-crawler/tree/docker_cron)
+```
+docker pull kuchy/packtpub-crawler
+```
+
 ### Development (only for spidering)
 Run a simple static server with
 ```
