@@ -249,7 +249,7 @@ docker run \
   --rm \
   --name my-packtpub-crawler \
   niqdev/packtpub-crawler:1.5.0 \
-  python script/spider.py --config config/prod.cfg --notify ifttt
+  python script/spider.py --config config/prod.cfg
 ```
 
 Run scheduled crawler in background
