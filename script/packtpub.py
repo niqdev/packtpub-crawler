@@ -124,6 +124,10 @@ class Packpub(object):
             for type in types]
 
         directory = self.__config.get('path', 'path.ebooks')
+
+        if self.__config.get('path', 'path.separate') == "true":
+            directory = directory + '/' + self.info['title'] + ' - ' + self.info['author']
+
         for download in downloads_info:
             self.info['paths'].append(
                 download_file(self.__session, download['url'], directory, download['filename'], self.__headers))
@@ -133,6 +137,9 @@ class Packpub(object):
         """
 
         directory = self.__config.get('path', 'path.extras')
+
+        if self.__config.get('path', 'path.separate') == "true":
+            directory = self.__config.get('path', 'path.ebooks') + '/' + self.info['title'] + ' - ' + self.info['author'] + '/' +  directory
 
         url_image = self.info['url_image']
         filename = self.info['filename'] + '_' + split(url_image)[1]
