@@ -123,7 +123,16 @@ class Packpub(object):
             filename=self.info['filename'] + '.' + type)
             for type in types]
 
-        directory = self.__config.get('path', 'path.ebooks')
+        if self.__config.has_option('path', 'path.separate.extras'):
+            space = self.__config.get('path', 'path.separate.space')
+
+            if space == '?':
+                space = ' '
+
+            directory = self.__config.get('path', 'path.separate.ebooks') + '/' + self.info['title'].encode('ascii', 'ignore').replace(' ', space) + space + '-' + space + self.info['author'].encode('ascii', 'ignore').replace(' ', space)
+        else:
+            directory = self.__config.get('path', 'path.ebooks')
+
         for download in downloads_info:
             self.info['paths'].append(
                 download_file(self.__session, download['url'], directory, download['filename'], self.__headers))
@@ -132,7 +141,15 @@ class Packpub(object):
         """
         """
 
-        directory = self.__config.get('path', 'path.extras')
+        if self.__config.has_option('path', 'path.separate.extras'):
+            space = self.__config.get('path', 'path.separate.space')
+
+            if space == '?':
+                space = ' '
+
+            directory = self.__config.get('path', 'path.separate.ebooks') + '/' + self.info['title'].encode('ascii', 'ignore').replace(' ', space) + space + '-' + space + self.info['author'].encode('ascii', 'ignore').replace(' ', space) + '/' +  self.__config.get('path', 'path.separate.extras')
+        else:
+            directory = self.__config.get('path', 'path.extras')
 
         url_image = self.info['url_image']
         filename = self.info['filename'] + '_' + split(url_image)[1]
