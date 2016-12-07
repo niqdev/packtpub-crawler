@@ -1,6 +1,6 @@
 import requests
 import re
-from os.path import split
+from os.path import split, join
 from utils import make_soup, wait, download_file
 from logs import *
 
@@ -123,13 +123,13 @@ class Packpub(object):
             filename=self.info['filename'] + '.' + type)
             for type in types]
 
-        if self.__config.has_option('path', 'path.separate.extras'):
-            space = self.__config.get('path', 'path.separate.space')
+        # https://github.com/niqdev/packtpub-crawler/pull/27
+        if self.__config.has_option('path', 'path.group'):
 
-            if space == '?':
-                space = ' '
+            folder_name = self.info['title'].encode('ascii', 'ignore').replace(' ', '_') + \
+                          self.info['author'].encode('ascii', 'ignore').replace(' ', '_')
 
-            directory = self.__config.get('path', 'path.separate.ebooks') + '/' + self.info['title'].encode('ascii', 'ignore').replace(' ', space) + space + '-' + space + self.info['author'].encode('ascii', 'ignore').replace(' ', space)
+            directory = join(self.__config.get('path', 'path.ebooks'), folder_name)
         else:
             directory = self.__config.get('path', 'path.ebooks')
 
@@ -141,13 +141,13 @@ class Packpub(object):
         """
         """
 
-        if self.__config.has_option('path', 'path.separate.extras'):
-            space = self.__config.get('path', 'path.separate.space')
+        # https://github.com/niqdev/packtpub-crawler/pull/27
+        if self.__config.has_option('path', 'path.group'):
 
-            if space == '?':
-                space = ' '
+            folder_name = self.info['title'].encode('ascii', 'ignore').replace(' ', '_') + \
+                          self.info['author'].encode('ascii', 'ignore').replace(' ', '_')
 
-            directory = self.__config.get('path', 'path.separate.ebooks') + '/' + self.info['title'].encode('ascii', 'ignore').replace(' ', space) + space + '-' + space + self.info['author'].encode('ascii', 'ignore').replace(' ', space) + '/' +  self.__config.get('path', 'path.separate.extras')
+            directory = join(self.__config.get('path', 'path.ebooks'), folder_name, self.__config.get('path', 'path.extras'))
         else:
             directory = self.__config.get('path', 'path.extras')
 
