@@ -17,7 +17,7 @@ This crawler automates the following step:
 ### Default command
 ```bash
 # upload pdf to drive, store data and notify via email
-python script/spider.py -c config/prod.cfg -u drive -s firebase -n
+python script/spider.py -c config/prod.cfg -u drive -s firebase -n gmail
 ```
 
 ### Other options
@@ -38,7 +38,7 @@ python script/spider.py -c config/prod.cfg -t epub --upload drive
 python script/spider.py --config config/prod.cfg --all --extras --upload drive
 
 # download and notify: gmail|ifttt|join
-python script/spider.py -c config/prod.cfg --notify
+python script/spider.py -c config/prod.cfg --notify gmail
 ```
 
 ### Basic setup
