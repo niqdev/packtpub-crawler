@@ -23,7 +23,7 @@ def config_file(path):
     if not os.path.exists(path):
         raise IOError('file not found!')
 
-    log_info('[+] configuration file: {0}'.format(path))
+    log_info('[*] configuration file: {0}'.format(path))
     config = ConfigParser.ConfigParser()
     config.read(path)
     return config
@@ -62,7 +62,7 @@ def download_file(r, url, directory, filename, headers):
     total_length = 0
     test_length = response.headers.get('content-length')
     if test_length is not None:
-        total_length = int(test_length)    
+        total_length = int(test_length)
 
     with open(path, 'wb') as f:
         for chunk in progress.bar(response.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1):
