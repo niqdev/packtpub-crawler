@@ -28,3 +28,9 @@ class Notify(object):
         """
         """
         self.service.send()
+
+
+    def sendError(self, exception):
+        """
+        """
+        self.service.sendError(exception)

@@ -41,6 +41,11 @@ def main():
     now = datetime.datetime.now()
     log_info('[*] {date} - Fetching today\'s books'.format(date=now.strftime("%Y-%m-%d %H:%M")))
 
+    packtpub = None
+    upload = None
+    upload_info = None
+    packpub_info = None
+
     try:
         #ip_address()
         config = config_file(args.config)
@@ -53,8 +58,6 @@ def main():
             log_json(packpub.info)
 
         log_success('[+] book successfully claimed')
-
-        upload = None
 
         if not args.claimOnly:
             packpub.download_ebooks(types)
@@ -75,8 +78,6 @@ def main():
                 Database(config, args.store, packpub.info, upload.info).store()
 
         if args.notify:
-            upload_info = None
-
             if upload is not None:
                 upload_info = upload.info
 
@@ -86,6 +87,15 @@ def main():
         log_error('[-] interrupted manually')
     except Exception as e:
         log_debug(e)
+        if args.notify:
+            if upload is not None:
+                upload_info = upload.info
+
+            if packtpub is not None:
+                packpub_info = packtpub.info
+
+            Notify(config, packpub_info, upload_info, args.notify).sendError(e)
+
         log_error('[-] something weird occurred, exiting...')
 
 if __name__ == '__main__':

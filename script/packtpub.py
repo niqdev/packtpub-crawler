@@ -94,6 +94,9 @@ class Packpub(object):
         soup = make_soup(response)
         div_target = soup.find('div', {'id': 'product-account-list'})
 
+        if div_target is None:
+            raise Exception('Could not access claim page. This is most likely caused by invalid credentials')
+
         # only last one just claimed
         div_claimed_book = div_target.select('.product-line')[0]
         self.info['book_id'] = div_claimed_book['nid']
