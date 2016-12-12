@@ -1,6 +1,7 @@
 #!/bin/env python
 
 import argparse
+import datetime
 from utils import ip_address, config_file
 from packtpub import Packpub
 from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP
@@ -25,8 +26,9 @@ def main():
     parser.add_argument('-e', '--extras', action='store_true', help='download source code (if exists) and book cover')
     parser.add_argument('-u', '--upload', choices=[SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP], help='upload to cloud')
     parser.add_argument('-a', '--archive', action='store_true', help='compress all file')
-    parser.add_argument('-n', '--notify', choices=[SERVICE_GMAIL, SERVICE_IFTTT, SERVICE_JOIN], help='notify after download')
+    parser.add_argument('-n', '--notify', choices=[SERVICE_GMAIL, SERVICE_IFTTT, SERVICE_JOIN], help='notify after claim/download')
     parser.add_argument('-s', '--store', choices=[DB_FIREBASE], help='store info')
+    parser.add_argument('-o', '--claimOnly', action='store_true', help='only claim books (no downloads/uploads)')
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-t', '--type', choices=['pdf', 'epub', 'mobi'],
@@ -36,6 +38,9 @@ def main():
 
     args = parser.parse_args()
 
+    now = datetime.datetime.now()
+    log_info('[*] {date} - Fetching today\'s books'.format(date=now.strftime("%Y-%m-%d %H:%M")))
+
     try:
         #ip_address()
         config = config_file(args.config)
@@ -43,24 +48,31 @@ def main():
 
         packpub = Packpub(config, args.dev)
         packpub.run()
-        log_json(packpub.info)
 
-        packpub.download_ebooks(types)
-        if args.extras:
-            packpub.download_extras()
+        if args.dev:
+            log_json(packpub.info)
 
-        if args.archive:
-            raise NotImplementedError('not implemented yet!')
+        log_success('[+] book successfully claimed')
 
         upload = None
-        if args.upload is not None:
-            upload = Upload(config, args.upload)
-            upload.run(packpub.info['paths'])
 
-        if upload is not SERVICE_DRIVE:
-            log_warn('[-] skip store info: missing upload info')
-        elif args.store is not None:
-            Database(config, args.store, packpub.info, upload.info).store()
+        if not args.claimOnly:
+            packpub.download_ebooks(types)
+
+            if args.extras:
+                packpub.download_extras()
+
+            if args.archive:
+                raise NotImplementedError('not implemented yet!')
+
+            if args.upload is not None:
+                upload = Upload(config, args.upload)
+                upload.run(packpub.info['paths'])
+
+            if upload is not None and upload is not SERVICE_DRIVE:
+                log_warn('[-] skip store info: missing upload info')
+            elif args.store is not None:
+                Database(config, args.store, packpub.info, upload.info).store()
 
         if args.notify:
             upload_info = None

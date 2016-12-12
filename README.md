@@ -39,6 +39,9 @@ python script/spider.py --config config/prod.cfg --all --extras --upload drive
 
 # download and notify: gmail|ifttt|join
 python script/spider.py -c config/prod.cfg --notify gmail
+
+# only claim book (no downloads):
+python script/spider.py -c config/prod.cfg --notify gmail --claimOnly
 ```
 
 ### Basic setup

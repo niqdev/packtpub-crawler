@@ -44,7 +44,7 @@ class Packpub(object):
             url += self.__config.get('url', 'url.login')
 
         response = self.__session.get(url, headers=self.__headers)
-        self.__log_response(response)
+        self.__log_response(response, 'GET', self.__dev)
 
         soup = make_soup(response)
         form = soup.find('form', {'id': 'packt-user-login-form'})
@@ -63,11 +63,11 @@ class Packpub(object):
         if self.__dev:
             url += self.__config.get('url', 'url.loginPost')
             response = self.__session.get(url, headers=self.__headers, data=data)
-            self.__log_response(response)
+            self.__log_response(response, 'GET', self.__dev)
         else:
             url += self.__config.get('url', 'url.login')
             response = self.__session.post(url, headers=self.__headers, data=data)
-            self.__log_response(response, 'POST', True)
+            self.__log_response(response, 'POST', self.__dev)
 
         soup = make_soup(response)
         div_target = soup.find('div', {'id': 'deal-of-the-day'})
@@ -89,7 +89,7 @@ class Packpub(object):
             url = self.info['url_claim']
 
         response = self.__session.get(url, headers=self.__headers)
-        self.__log_response(response)
+        self.__log_response(response, 'GET', self.__dev)
 
         soup = make_soup(response)
         div_target = soup.find('div', {'id': 'product-account-list'})
