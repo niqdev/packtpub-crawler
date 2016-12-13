@@ -274,10 +274,9 @@ docker pull kuchy/packtpub-crawler
 ```
 
 ### cronjob
-Add this to your crontab to run the job daily at 9 for example:
+Add this to your crontab to run the job daily at 9:
 ```
 00 09 * * * /usr/bin/python PATH_TO_CRAWLER/script/spider.py --config PATH_TO_CRAWLER/config/prod.cfg --all --extras --notify join >> /tmp/packtpub.log 2>&1
-
 ```
 
 ### Development (only for spidering)
