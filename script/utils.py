@@ -39,9 +39,10 @@ def make_soup(response, debug=False):
         print soup.prettify().encode('utf-8')
     return soup
 
-def wait(delay):
+def wait(delay, isDev):
     if delay > 0:
-        print '[-] going to sleep {0} seconds'.format(delay)
+        if isDev:
+            print '[-] going to sleep {0} seconds'.format(delay)
         sleep(delay)
 
 def download_file(r, url, directory, filename, headers):

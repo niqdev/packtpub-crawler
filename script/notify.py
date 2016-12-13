@@ -30,7 +30,7 @@ class Notify(object):
         self.service.send()
 
 
-    def sendError(self, exception):
+    def sendError(self, exception, source):
         """
         """
-        self.service.sendError(exception)
+        self.service.sendError(exception, source)

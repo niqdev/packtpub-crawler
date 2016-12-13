@@ -2,8 +2,11 @@
 
 import argparse
 import datetime
+import requests
+import os.path
 from utils import ip_address, config_file
 from packtpub import Packpub
+from packtpubFromNewsletter import PacktpubFromNewsletter
 from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP
 from database import Database, DB_FIREBASE
 from logs import *
@@ -14,6 +17,44 @@ def parse_types(args):
         return [args.type]
     else:
         return args.types
+
+def run(packpub, args, config):
+    packpub.run()
+
+    if args.dev:
+        log_json(packpub.info)
+
+    log_success('[+] book successfully claimed')
+
+    upload = None
+    upload_info = None
+    packpub_info = None
+
+    if not args.claimOnly:
+        types = parse_types(args)
+
+        packpub.download_ebooks(types)
+
+        if args.extras:
+            packpub.download_extras()
+
+        if args.archive:
+            raise NotImplementedError('not implemented yet!')
+
+        if args.upload is not None:
+            upload = Upload(config, args.upload)
+            upload.run(packpub.info['paths'])
+
+        if upload is not None and upload is not SERVICE_DRIVE:
+            log_warn('[-] skip store info: missing upload info')
+        elif args.store is not None:
+            Database(config, args.store, packpub.info, upload.info).store()
+
+    if args.notify:
+        if upload is not None:
+            upload_info = upload.info
+
+        Notify(config, packpub.info, upload_info, args.notify).run()
 
 def main():
     parser = argparse.ArgumentParser(
@@ -42,61 +83,54 @@ def main():
     log_info('[*] {date} - Fetching today\'s books'.format(date=now.strftime("%Y-%m-%d %H:%M")))
 
     packtpub = None
-    upload = None
-    upload_info = None
-    packpub_info = None
 
     try:
-        #ip_address()
         config = config_file(args.config)
-        types = parse_types(args)
 
-        packpub = Packpub(config, args.dev)
-        packpub.run()
+        #ip_address()
+        log_info('[*] getting daily free ebook')
 
-        if args.dev:
-            log_json(packpub.info)
+        try:
+            packpub = Packpub(config, args.dev)
+            run(packpub, args, config)
+        except Exception as e:
+            log_debug(e)
+            if args.notify:
+                Notify(config, None, None, args.notify).sendError(e, 'daily')
 
-        log_success('[+] book successfully claimed')
+        lastNewsletterUrlPath = 'config/lastNewsletterUrl.csv'
+        lastNewsletterUrl = None
 
-        if not args.claimOnly:
-            packpub.download_ebooks(types)
+        if os.path.isfile(lastNewsletterUrlPath):
+            with open(lastNewsletterUrlPath, 'r') as f:
+                lastNewsletterUrl = f.read()
 
-            if args.extras:
-                packpub.download_extras()
+        currentNewsletterUrl = requests.get('https://goo.gl/kUciut').text
 
-            if args.archive:
-                raise NotImplementedError('not implemented yet!')
+        if lastNewsletterUrl != currentNewsletterUrl:
+            log_info('[*] getting free ebook from newsletter')
+            try:
+                packpubNewsletter = PacktpubFromNewsletter(config, "/packt/free-ebook/javascript-high-performance", args.dev)
+                run(packpubNewsletter, args, config)
+                with open(lastNewsletterUrlPath, 'w+') as f:
+                    f.write(currentNewsletterUrl)
 
-            if args.upload is not None:
-                upload = Upload(config, args.upload)
-                upload.run(packpub.info['paths'])
-
-            if upload is not None and upload is not SERVICE_DRIVE:
-                log_warn('[-] skip store info: missing upload info')
-            elif args.store is not None:
-                Database(config, args.store, packpub.info, upload.info).store()
-
-        if args.notify:
-            if upload is not None:
-                upload_info = upload.info
-
-            Notify(config, packpub.info, upload_info, args.notify).run()
+            except Exception as e:
+                log_debug(e)
+                if args.notify:
+                    Notify(config, None, None, args.notify).sendError(e, 'newsletter')
+        else:
+            log_info('[*] already got latest ebook from newsletter, skipping')
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
+
     except Exception as e:
         log_debug(e)
         if args.notify:
-            if upload is not None:
-                upload_info = upload.info
+            Notify(config, None, None, args.notify).sendError(e, 'global')
 
-            if packtpub is not None:
-                packpub_info = packtpub.info
-
-            Notify(config, packpub_info, upload_info, args.notify).sendError(e)
-
-        log_error('[-] something weird occurred, exiting...')
+    log_info('[*] done')
 
 if __name__ == '__main__':
     print ("""

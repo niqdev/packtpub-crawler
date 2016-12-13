@@ -14,9 +14,10 @@ class Ifttt(object):
 
     def send(self):
         r = requests.post(self.__url, data = {'value1':self.__packpub_info['title'].encode('utf-8'), 'value2':self.__packpub_info['description'].encode('utf-8')})
-        log_success('[+] Notification sent to IFTTT')
+        log_success('[+] notification sent to IFTTT')
 
-    def sendError(self, exception):
-        r = requests.post(self.__url, data = {'value1':"packtpub-crawler: Could not download ebook", 'value2':repr(exception)})
+    def sendError(self, exception, source):
+        title = "packtpub-crawler [{source}]: Could not download ebook".format(source=source)
+        r = requests.post(self.__url, data = {'value1':title, 'value2':repr(exception)})
 
-        log_success('[+] Error notification sent to IFTTT')
+        log_success('[+] error notification sent to IFTTT')

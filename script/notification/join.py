@@ -19,16 +19,16 @@ class Join(object):
 
         r = requests.post(url)
 
-        log_success('[+] Notification sent to Join')
+        log_success('[+] notification sent to Join')
 
-    def sendError(self, exception):
+    def sendError(self, exception, source):
         url = "https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey={apiKey}&deviceId={deviceIds}&title={title}&text={description}".format(
             apiKey=self.__config.get('join', 'join.api_key'),
             deviceIds=self.__config.get('join', 'join.device_ids'),
-            title='packtpub-crawler: Could not download ebook',
+            title='packtpub-crawler {source}: Could not download ebook'.format(source=source),
             description=repr(exception)
         )
 
         r = requests.post(url)
 
-        log_success('[+] Notification sent to Join')
+        log_success('[+] error notification sent to Join')
