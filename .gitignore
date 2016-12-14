@@ -9,7 +9,6 @@
 config/prod.cfg
 config/client_secrets.json
 config/auth_token.json
-config/lastNewsletterUrl.csv
 
 ebooks/
 node_modules/

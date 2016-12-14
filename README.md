@@ -6,13 +6,12 @@ This crawler automates the following step:
 
 * access to private account
 * claim the daily free eBook
-* claim free eBooks from the newsletter
 * parse title, description and useful information
 * download favorite format *.pdf .epub .mobi*
 * download source code and book cover
 * upload files to Google Drive or via scp
 * store data on Firebase
-* notify via email, IFTTT or Join
+* notify via email, IFTTT or Join (on success and errors)
 * schedule daily job on Heroku or with Docker
 
 ### Default command
@@ -271,12 +270,6 @@ docker logs -f my-packtpub-crawler
 Alternatively you can pull from [Docker Hub](https://hub.docker.com/r/kuchy/packtpub-crawler/) this [fork](https://github.com/kuchy/packtpub-crawler/tree/docker_cron)
 ```
 docker pull kuchy/packtpub-crawler
-```
-
-### cronjob
-Add this to your crontab to run the job daily at 9:
-```
-00 09 * * * /usr/bin/python PATH_TO_CRAWLER/script/spider.py --config PATH_TO_CRAWLER/config/prod.cfg --all --extras --notify join >> /tmp/packtpub.log 2>&1
 ```
 
 ### Development (only for spidering)

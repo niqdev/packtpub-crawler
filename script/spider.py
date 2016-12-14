@@ -2,11 +2,8 @@
 
 import argparse
 import datetime
-import requests
-import os.path
 from utils import ip_address, config_file
 from packtpub import Packpub
-from packtpubFromNewsletter import PacktpubFromNewsletter
 from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP
 from database import Database, DB_FIREBASE
 from logs import *
@@ -89,38 +86,8 @@ def main():
 
         #ip_address()
         log_info('[*] getting daily free ebook')
-
-        try:
-            packpub = Packpub(config, args.dev)
-            run(packpub, args, config)
-        except Exception as e:
-            log_debug(e)
-            if args.notify:
-                Notify(config, None, None, args.notify).sendError(e, 'daily')
-
-        lastNewsletterUrlPath = 'config/lastNewsletterUrl.csv'
-        lastNewsletterUrl = None
-
-        if os.path.isfile(lastNewsletterUrlPath):
-            with open(lastNewsletterUrlPath, 'r') as f:
-                lastNewsletterUrl = f.read()
-
-        currentNewsletterUrl = requests.get('https://goo.gl/kUciut').text
-
-        if lastNewsletterUrl != currentNewsletterUrl:
-            log_info('[*] getting free ebook from newsletter')
-            try:
-                packpubNewsletter = PacktpubFromNewsletter(config, "/packt/free-ebook/javascript-high-performance", args.dev)
-                run(packpubNewsletter, args, config)
-                with open(lastNewsletterUrlPath, 'w+') as f:
-                    f.write(currentNewsletterUrl)
-
-            except Exception as e:
-                log_debug(e)
-                if args.notify:
-                    Notify(config, None, None, args.notify).sendError(e, 'newsletter')
-        else:
-            log_info('[*] already got latest ebook from newsletter, skipping')
+        packpub = Packpub(config, args.dev)
+        run(packpub, args, config)
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
