@@ -29,8 +29,8 @@ class Packpub(object):
         }
 
     def __log_response(self, response, method='GET', detail=False):
-        print '[-] {0} {1} | {2}'.format(method, response.url, response.status_code)
         if detail:
+            print '[-] {0} {1} | {2}'.format(method, response.url, response.status_code)
             print '[-] cookies:'
             log_dict(requests.utils.dict_from_cookiejar(self.__session.cookies))
             print '[-] headers:'
@@ -94,6 +94,9 @@ class Packpub(object):
         soup = make_soup(response)
         div_target = soup.find('div', {'id': 'product-account-list'})
 
+        if div_target is None:
+            raise Exception('Could not access claim page. This is most likely caused by invalid credentials')
+
         # only last one just claimed
         div_claimed_book = div_target.select('.product-line')[0]
         self.info['book_id'] = div_claimed_book['nid']
@@ -108,11 +111,11 @@ class Packpub(object):
         """
 
         self.__GET_login()
-        wait(self.__delay)
+        wait(self.__delay, self.__dev)
         self.__POST_login()
-        wait(self.__delay)
+        wait(self.__delay, self.__dev)
         self.__GET_claim()
-        wait(self.__delay)
+        wait(self.__delay, self.__dev)
 
     def download_ebooks(self, types):
         """

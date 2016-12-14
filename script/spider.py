@@ -15,6 +15,44 @@ def parse_types(args):
     else:
         return args.types
 
+def run(packpub, args, config):
+    packpub.run()
+
+    if args.dev:
+        log_json(packpub.info)
+
+    log_success('[+] book successfully claimed')
+
+    upload = None
+    upload_info = None
+    packpub_info = None
+
+    if not args.claimOnly:
+        types = parse_types(args)
+
+        packpub.download_ebooks(types)
+
+        if args.extras:
+            packpub.download_extras()
+
+        if args.archive:
+            raise NotImplementedError('not implemented yet!')
+
+        if args.upload is not None:
+            upload = Upload(config, args.upload)
+            upload.run(packpub.info['paths'])
+
+        if upload is not None and upload is not SERVICE_DRIVE:
+            log_warn('[-] skip store info: missing upload info')
+        elif args.store is not None:
+            Database(config, args.store, packpub.info, upload.info).store()
+
+    if args.notify:
+        if upload is not None:
+            upload_info = upload.info
+
+        Notify(config, packpub.info, upload_info, args.notify).run()
+
 def main():
     parser = argparse.ArgumentParser(
         description='Download FREE eBook every day from www.packtpub.com',
@@ -41,52 +79,25 @@ def main():
     now = datetime.datetime.now()
     log_info('[*] {date} - Fetching today\'s books'.format(date=now.strftime("%Y-%m-%d %H:%M")))
 
+    packtpub = None
+
     try:
-        #ip_address()
         config = config_file(args.config)
-        types = parse_types(args)
 
+        #ip_address()
+        log_info('[*] getting daily free ebook')
         packpub = Packpub(config, args.dev)
-        packpub.run()
-
-        if args.dev:
-            log_json(packpub.info)
-
-        log_success('[+] book successfully claimed')
-
-        upload = None
-
-        if not args.claimOnly:
-            packpub.download_ebooks(types)
-
-            if args.extras:
-                packpub.download_extras()
-
-            if args.archive:
-                raise NotImplementedError('not implemented yet!')
-
-            if args.upload is not None:
-                upload = Upload(config, args.upload)
-                upload.run(packpub.info['paths'])
-
-            if upload is not None and upload is not SERVICE_DRIVE:
-                log_warn('[-] skip store info: missing upload info')
-            elif args.store is not None:
-                Database(config, args.store, packpub.info, upload.info).store()
-
-        if args.notify:
-            upload_info = None
-
-            if upload is not None:
-                upload_info = upload.info
-
-            Notify(config, packpub.info, upload_info, args.notify).run()
+        run(packpub, args, config)
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
+
     except Exception as e:
         log_debug(e)
-        log_error('[-] something weird occurred, exiting...')
+        if args.notify:
+            Notify(config, None, None, args.notify).sendError(e, 'global')
+
+    log_info('[*] done')
 
 if __name__ == '__main__':
     print ("""
