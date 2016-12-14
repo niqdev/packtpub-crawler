@@ -85,7 +85,6 @@ def main():
 
         #ip_address()
         log_info('[*] getting daily free ebook')
-<<<<<<< b3fda74d2deccbf23753568b1ca9ad976a00092a
 
         try:
             packpub.runDaily()
@@ -120,10 +119,6 @@ def main():
                     Notify(config, None, None, args.notify).sendError(e, 'newsletter')
         else:
             log_info('[*] already got latest ebook from newsletter, skipping')
-=======
-        packpub = Packpub(config, args.dev)
-        run(packpub, args, config)
->>>>>>> Added error notifications
 
     except KeyboardInterrupt:
         log_error('[-] interrupted manually')
