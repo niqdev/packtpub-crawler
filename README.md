@@ -272,6 +272,12 @@ Alternatively you can pull from [Docker Hub](https://hub.docker.com/r/kuchy/pack
 docker pull kuchy/packtpub-crawler
 ```
 
+### cronjob
+Add this to your crontab (crontab -e) to run the job daily at 9:
+```
+00 09 * * * /usr/bin/python PATH_TO_CRAWLER/script/spider.py --config PATH_TO_CRAWLER/config/prod.cfg --all --extras --notify join >> /tmp/packtpub.log 2>&1
+```
+
 ### Development (only for spidering)
 Run a simple static server with
 ```
