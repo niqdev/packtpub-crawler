@@ -6,13 +6,12 @@ This crawler automates the following step:
 
 * access to private account
 * claim the daily free eBook
-* claim free eBooks from the newsletter
 * parse title, description and useful information
 * download favorite format *.pdf .epub .mobi*
 * download source code and book cover
 * upload files to Google Drive or via scp
 * store data on Firebase
-* notify via email, IFTTT or Join
+* notify via email, IFTTT or Join (on success and errors)
 * schedule daily job on Heroku or with Docker
 
 ### Default command
