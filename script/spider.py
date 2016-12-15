@@ -96,7 +96,7 @@ def main():
             if args.notify:
                 Notify(config, None, None, args.notify).sendError(e, 'daily')
 
-        lastNewsletterUrlPath = 'config/lastNewsletterUrl.csv'
+        lastNewsletterUrlPath = 'config/lastNewsletterUrl'
         lastNewsletterUrl = None
 
         if os.path.isfile(lastNewsletterUrlPath):
