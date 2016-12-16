@@ -82,7 +82,7 @@ def main():
     packtpub = None
 
     try:
-        dir_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/'
+        dir_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + os.path.sep
 
         config = config_file(dir_path + args.config)
         packpub = Packpub(config, args.dev)
