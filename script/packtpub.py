@@ -36,48 +36,60 @@ class Packpub(object):
             print '[-] headers:'
             log_dict(response.headers)
 
-    def __GET_login(self):
-        url = self.__url_base
-        if self.__dev:
-            url += self.__config.get('url', 'url.loginGet')
-        else:
-            url += self.__config.get('url', 'url.login')
-
+    def __GET_login(self, url):
         response = self.__session.get(url, headers=self.__headers)
         self.__log_response(response, 'GET', self.__dev)
 
         soup = make_soup(response)
+
         form = soup.find('form', {'id': 'packt-user-login-form'})
         self.info['form_build_id'] = form.find('input', attrs={'name': 'form_build_id'})['value']
         self.info['form_id'] = form.find('input', attrs={'name': 'form_id'})['value']
 
-    def __POST_login(self):
+    def __POST_login(self, url):
         data = self.info.copy()
         data['email'] = self.__config.get('credential', 'credential.email')
         data['password'] = self.__config.get('credential', 'credential.password')
         data['op'] = 'Login'
         # print '[-] data: {0}'.format(urllib.urlencode(data))
 
-        url = self.__url_base
         response = None
         if self.__dev:
-            url += self.__config.get('url', 'url.loginPost')
             response = self.__session.get(url, headers=self.__headers, data=data)
             self.__log_response(response, 'GET', self.__dev)
         else:
-            url += self.__config.get('url', 'url.login')
             response = self.__session.post(url, headers=self.__headers, data=data)
             self.__log_response(response, 'POST', self.__dev)
 
-        soup = make_soup(response)
-        div_target = soup.find('div', {'id': 'deal-of-the-day'})
+        return make_soup(response)
 
+    def __parseDailyBookInfo(self, soup):
+        div_target = soup.find('div', {'id': 'deal-of-the-day'})
         title = div_target.select('div.dotd-title > h2')[0].text.strip()
         self.info['title'] = title
         self.info['filename'] = title.encode('ascii', 'ignore').replace(' ', '_')
         self.info['description'] = div_target.select('div.dotd-main-book-summary > div')[2].text.strip()
         self.info['url_image'] = 'https:' + div_target.select('div.dotd-main-book-image img')[0]['data-original']
         self.info['url_claim'] = self.__url_base + div_target.select('a.twelve-days-claim')[0]['href']
+        # remove useless info
+        self.info.pop('form_build_id', None)
+        self.info.pop('form_id', None)
+
+    def __parseNewsletterBookInfo(self, soup):
+        div_target = soup.find('div', {'id': 'main-book'})
+
+        urlWithTitle = div_target.select('div.promo-landing-book-picture a')[0]['href']
+        title = urlWithTitle.split('/')[4].replace('-', ' ').title()
+        claimNode = div_target.select('div.promo-landing-book-info a')
+
+        if len(claimNode) == 0:
+            raise Exception('Could not access claim page. This is most likely caused by invalid credentials')
+
+        self.info['title'] = title
+        self.info['filename'] = title.replace(' ', '_').encode('ascii', 'ignore')
+        self.info['description'] = div_target.select('div.promo-landing-book-body > div')[0].text.strip()
+        self.info['url_image'] = 'https:' + div_target.select('div.promo-landing-book-picture img')[0]['src']
+        self.info['url_claim'] = self.__url_base + claimNode[0]['href']
         # remove useless info
         self.info.pop('form_build_id', None)
         self.info.pop('form_id', None)
@@ -106,13 +118,34 @@ class Packpub(object):
         if source_code is not None:
             self.info['url_source_code'] = self.__url_base + source_code['href']
 
-    def run(self):
+    def runDaily(self):
+        """
+        """
+        if self.__dev:
+            loginUrl = self.__url_base + self.__config.get('url', 'url.loginGet')
+        else:
+            loginUrl = self.__url_base + self.__config.get('url', 'url.login')
+
+        self.__GET_login(loginUrl)
+        wait(self.__delay, self.__dev)
+
+        if self.__dev:
+            loginUrl = self.__url_base + self.__config.get('url', 'url.loginPost')
+
+        soup = self.__POST_login(loginUrl)
+        self.__parseDailyBookInfo(soup)
+        wait(self.__delay, self.__dev)
+        self.__GET_claim()
+        wait(self.__delay, self.__dev)
+
+    def runNewsletter(self, currentNewsletterUrl):
         """
         """
 
-        self.__GET_login()
+        self.__GET_login(currentNewsletterUrl)
         wait(self.__delay, self.__dev)
-        self.__POST_login()
+        soup = self.__POST_login(currentNewsletterUrl)
+        self.__parseNewsletterBookInfo(soup)
         wait(self.__delay, self.__dev)
         self.__GET_claim()
         wait(self.__delay, self.__dev)
