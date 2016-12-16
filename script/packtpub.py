@@ -37,9 +37,6 @@ class Packpub(object):
             log_dict(response.headers)
 
     def __GET_login(self, url):
-        if self.__dev:
-            url = self.__url_base + self.__config.get('url', 'url.loginGet')
-
         response = self.__session.get(url, headers=self.__headers)
         self.__log_response(response, 'GET', self.__dev)
 

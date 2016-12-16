@@ -2,6 +2,7 @@
 
 import argparse
 import datetime
+import requests
 from utils import ip_address, config_file
 from packtpub import Packpub
 from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP
