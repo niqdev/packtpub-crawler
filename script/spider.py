@@ -97,6 +97,7 @@ def main():
             log_debug(e)
             if args.notify:
                 Notify(config, None, None, args.notify).sendError(e, 'daily')
+            return
 
         lastNewsletterUrlPath = 'config/lastNewsletterUrl'
         lastNewsletterUrl = None

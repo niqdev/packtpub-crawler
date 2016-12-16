@@ -69,7 +69,7 @@ class Packpub(object):
         error_node = soup.find('div', {'class': 'messages error'})
 
         if error_node is not None:
-            raise Exception(error_node[0].text.strip())
+            raise Exception(error_node.text.strip())
 
     def __parseDailyBookInfo(self, soup):
         div_target = soup.find('div', {'id': 'deal-of-the-day'})
@@ -93,9 +93,6 @@ class Packpub(object):
         urlWithTitle = div_target.select('div.promo-landing-book-picture a')[0]['href']
         title = urlWithTitle.split('/')[4].replace('-', ' ').title()
         claimNode = div_target.select('div.promo-landing-book-info a')
-
-        if len(claimNode) == 0:
-            raise Exception('Could not access claim page. This is most likely caused by invalid credentials')
 
         self.info['title'] = title
         self.info['filename'] = title.replace(' ', '_').encode('ascii', 'ignore')
