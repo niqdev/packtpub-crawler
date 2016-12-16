@@ -37,13 +37,11 @@ class Packpub(object):
             log_dict(response.headers)
 
     def __GET_login(self, url):
-        if self.__dev:
-            url = self.__url_base + self.__config.get('url', 'url.loginGet')
-
         response = self.__session.get(url, headers=self.__headers)
         self.__log_response(response, 'GET', self.__dev)
 
         soup = make_soup(response)
+
         form = soup.find('form', {'id': 'packt-user-login-form'})
         self.info['form_build_id'] = form.find('input', attrs={'name': 'form_build_id'})['value']
         self.info['form_id'] = form.find('input', attrs={'name': 'form_id'})['value']
@@ -57,7 +55,6 @@ class Packpub(object):
 
         response = None
         if self.__dev:
-            url = self.__url_base + self.__config.get('url', 'url.loginPost')
             response = self.__session.get(url, headers=self.__headers, data=data)
             self.__log_response(response, 'GET', self.__dev)
         else:
@@ -124,10 +121,17 @@ class Packpub(object):
     def runDaily(self):
         """
         """
+        if self.__dev:
+            loginUrl = self.__url_base + self.__config.get('url', 'url.loginGet')
+        else:
+            loginUrl = self.__url_base + self.__config.get('url', 'url.login')
 
-        loginUrl = self.__url_base + self.__config.get('url', 'url.login')
         self.__GET_login(loginUrl)
         wait(self.__delay, self.__dev)
+
+        if self.__dev:
+            loginUrl = self.__url_base + self.__config.get('url', 'url.loginPost')
+
         soup = self.__POST_login(loginUrl)
         self.__parseDailyBookInfo(soup)
         wait(self.__delay, self.__dev)
