@@ -47,6 +47,8 @@ class Packpub(object):
         self.info['form_build_id'] = form.find('input', attrs={'name': 'form_build_id'})['value']
         self.info['form_id'] = form.find('input', attrs={'name': 'form_id'})['value']
 
+        return soup
+
     def __POST_login(self, url):
         data = self.info.copy()
         data['email'] = self.__config.get('credential', 'credential.email')
@@ -62,17 +64,12 @@ class Packpub(object):
             response = self.__session.post(url, headers=self.__headers, data=data)
             self.__log_response(response, 'POST', self.__dev)
 
-        if response.status_code != 200:
-            raise Exception('an error occured while fetching the page for the daily free book')
-
         soup = make_soup(response)
 
         error_node = soup.find('div', {'class': 'messages error'})
 
         if error_node is not None:
-            raise Exception('bad credentials')
-
-        return soup
+            raise Exception(error_node[0].text.strip())
 
     def __parseDailyBookInfo(self, soup):
         div_target = soup.find('div', {'id': 'deal-of-the-day'})
@@ -141,13 +138,14 @@ class Packpub(object):
         else:
             loginUrl = self.__url_base + self.__config.get('url', 'url.login')
 
-        self.__GET_login(loginUrl)
+        soup = self.__GET_login(loginUrl)
         wait(self.__delay, self.__dev)
 
         if self.__dev:
             loginUrl = self.__url_base + self.__config.get('url', 'url.loginPost')
 
-        soup = self.__POST_login(loginUrl)
+        self.__POST_login(loginUrl)
+        wait(self.__delay, self.__dev)
         self.__parseDailyBookInfo(soup)
         wait(self.__delay, self.__dev)
         self.__GET_claim()
@@ -157,9 +155,7 @@ class Packpub(object):
         """
         """
 
-        self.__GET_login(currentNewsletterUrl)
-        wait(self.__delay, self.__dev)
-        soup = self.__POST_login(currentNewsletterUrl)
+        soup = self.__GET_login(currentNewsletterUrl)
         self.__parseNewsletterBookInfo(soup)
         wait(self.__delay, self.__dev)
         self.__GET_claim()
