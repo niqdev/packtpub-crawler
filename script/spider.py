@@ -3,6 +3,7 @@
 import argparse
 import datetime
 import requests
+import os
 from utils import ip_address, config_file
 from packtpub import Packpub
 from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP
@@ -16,7 +17,7 @@ def parse_types(args):
     else:
         return args.types
 
-def handleClaim(packpub, args, config):
+def handleClaim(packpub, args, config, dir_path):
     if args.dev:
         log_json(packpub.info)
 
@@ -29,10 +30,10 @@ def handleClaim(packpub, args, config):
     if not args.claimOnly:
         types = parse_types(args)
 
-        packpub.download_ebooks(types)
+        packpub.download_ebooks(types, dir_path)
 
         if args.extras:
-            packpub.download_extras()
+            packpub.download_extras(dir_path)
 
         if args.archive:
             raise NotImplementedError('not implemented yet!')
@@ -81,7 +82,9 @@ def main():
     packtpub = None
 
     try:
-        config = config_file(args.config)
+        dir_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/'
+
+        config = config_file(dir_path + args.config)
         packpub = Packpub(config, args.dev)
 
         #ip_address()
@@ -89,13 +92,13 @@ def main():
 
         try:
             packpub.runDaily()
-            handleClaim(packpub, args, config)
+            handleClaim(packpub, args, config, dir_path)
         except Exception as e:
             log_debug(e)
             if args.notify:
                 Notify(config, None, None, args.notify).sendError(e, 'daily')
 
-        lastNewsletterUrlPath = 'config/lastNewsletterUrl'
+        lastNewsletterUrlPath = dir_path + 'config/lastNewsletterUrl'
         lastNewsletterUrl = None
 
         if os.path.isfile(lastNewsletterUrlPath):
@@ -109,7 +112,7 @@ def main():
             log_info('[*] getting free ebook from newsletter')
             try:
                 packpub.runNewsletter(currentNewsletterUrl)
-                handleClaim(packpub, args, config)
+                handleClaim(packpub, args, config, dir_path)
 
                 with open(lastNewsletterUrlPath, 'w+') as f:
                     f.write(currentNewsletterUrl)
