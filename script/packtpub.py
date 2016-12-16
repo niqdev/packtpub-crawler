@@ -3,6 +3,7 @@ import re
 from os.path import split, join
 from utils import make_soup, wait, download_file
 from logs import *
+from noBookException import NoBookException
 
 class Packpub(object):
     """
@@ -46,6 +47,8 @@ class Packpub(object):
         self.info['form_build_id'] = form.find('input', attrs={'name': 'form_build_id'})['value']
         self.info['form_id'] = form.find('input', attrs={'name': 'form_id'})['value']
 
+        return soup
+
     def __POST_login(self, url):
         data = self.info.copy()
         data['email'] = self.__config.get('credential', 'credential.email')
@@ -61,10 +64,19 @@ class Packpub(object):
             response = self.__session.post(url, headers=self.__headers, data=data)
             self.__log_response(response, 'POST', self.__dev)
 
-        return make_soup(response)
+        soup = make_soup(response)
+
+        error_node = soup.find('div', {'class': 'messages error'})
+
+        if error_node is not None:
+            raise Exception(error_node.text.strip())
 
     def __parseDailyBookInfo(self, soup):
         div_target = soup.find('div', {'id': 'deal-of-the-day'})
+
+        if div_target is None:
+            raise NoBookException('no free ebook today')
+
         title = div_target.select('div.dotd-title > h2')[0].text.strip()
         self.info['title'] = title
         self.info['filename'] = title.encode('ascii', 'ignore').replace(' ', '_')
@@ -81,9 +93,6 @@ class Packpub(object):
         urlWithTitle = div_target.select('div.promo-landing-book-picture a')[0]['href']
         title = urlWithTitle.split('/')[4].replace('-', ' ').title()
         claimNode = div_target.select('div.promo-landing-book-info a')
-
-        if len(claimNode) == 0:
-            raise Exception('Could not access claim page. This is most likely caused by invalid credentials')
 
         self.info['title'] = title
         self.info['filename'] = title.replace(' ', '_').encode('ascii', 'ignore')
@@ -126,13 +135,14 @@ class Packpub(object):
         else:
             loginUrl = self.__url_base + self.__config.get('url', 'url.login')
 
-        self.__GET_login(loginUrl)
+        soup = self.__GET_login(loginUrl)
         wait(self.__delay, self.__dev)
 
         if self.__dev:
             loginUrl = self.__url_base + self.__config.get('url', 'url.loginPost')
 
-        soup = self.__POST_login(loginUrl)
+        self.__POST_login(loginUrl)
+        wait(self.__delay, self.__dev)
         self.__parseDailyBookInfo(soup)
         wait(self.__delay, self.__dev)
         self.__GET_claim()
@@ -142,9 +152,7 @@ class Packpub(object):
         """
         """
 
-        self.__GET_login(currentNewsletterUrl)
-        wait(self.__delay, self.__dev)
-        soup = self.__POST_login(currentNewsletterUrl)
+        soup = self.__GET_login(currentNewsletterUrl)
         self.__parseNewsletterBookInfo(soup)
         wait(self.__delay, self.__dev)
         self.__GET_claim()

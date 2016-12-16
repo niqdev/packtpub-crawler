@@ -9,6 +9,7 @@ from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP
 from database import Database, DB_FIREBASE
 from logs import *
 from notify import Notify, SERVICE_GMAIL, SERVICE_IFTTT, SERVICE_JOIN
+from noBookException import NoBookException
 
 def parse_types(args):
     if args.types is None:
@@ -90,10 +91,13 @@ def main():
         try:
             packpub.runDaily()
             handleClaim(packpub, args, config)
+        except NoBookException as e:
+            log_info('[*] ' + e.message)
         except Exception as e:
             log_debug(e)
             if args.notify:
                 Notify(config, None, None, args.notify).sendError(e, 'daily')
+            return
 
         lastNewsletterUrlPath = 'config/lastNewsletterUrl'
         lastNewsletterUrl = None
