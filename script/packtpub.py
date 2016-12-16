@@ -3,6 +3,7 @@ import re
 from os.path import split, join
 from utils import make_soup, wait, download_file
 from logs import *
+from noBookException import NoBookException
 
 class Packpub(object):
     """
@@ -61,10 +62,24 @@ class Packpub(object):
             response = self.__session.post(url, headers=self.__headers, data=data)
             self.__log_response(response, 'POST', self.__dev)
 
-        return make_soup(response)
+        if response.status_code != 200:
+            raise Exception('an error occured while fetching the page for the daily free book')
+
+        soup = make_soup(response)
+
+        error_node = soup.find('div', {'class': 'messages error'})
+
+        if error_node is not None:
+            raise Exception('bad credentials')
+
+        return soup
 
     def __parseDailyBookInfo(self, soup):
         div_target = soup.find('div', {'id': 'deal-of-the-day'})
+
+        if div_target is None:
+            raise NoBookException('no free ebook today')
+
         title = div_target.select('div.dotd-title > h2')[0].text.strip()
         self.info['title'] = title
         self.info['filename'] = title.encode('ascii', 'ignore').replace(' ', '_')
