@@ -38,7 +38,7 @@ class Gmail(object):
             for detail in self.__upload_info['details']:
                 html += """<li>{mime_type} - <a href="{download_url}">{name}</a></li>"""\
                     .format(mime_type=detail['mime_type'], download_url=detail['download_url'], name=detail['name'])
-            html *= "</ul>"
+            html += "</ul>"
 
         html += """\
             <img src="{image}" alt="cover" />
