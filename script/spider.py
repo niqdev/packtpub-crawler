@@ -77,7 +77,7 @@ def main():
     args = parser.parse_args()
 
     now = datetime.datetime.now()
-    log_info('[*] {date} - Fetching today\'s ebook'.format(date=now.strftime("%Y-%m-%d %H:%M")))
+    log_info('[*] {date} - fetching today\'s ebook'.format(date=now.strftime("%Y-%m-%d %H:%M")))
 
     packtpub = None
 
