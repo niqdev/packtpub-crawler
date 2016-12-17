@@ -5,7 +5,7 @@ import datetime
 import requests
 import os
 from utils import ip_address, config_file
-from packtpub import Packpub
+from packtpub import Packtpub
 from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP
 from database import Database, DB_FIREBASE
 from logs import *
@@ -18,41 +18,40 @@ def parse_types(args):
     else:
         return args.types
 
-def handleClaim(packpub, args, config, dir_path):
+def handleClaim(packtpub, args, config, dir_path):
     if args.dev:
-        log_json(packpub.info)
+        log_json(packtpub.info)
 
     log_success('[+] book successfully claimed')
 
     upload = None
     upload_info = None
-    packpub_info = None
 
     if not args.claimOnly:
         types = parse_types(args)
 
-        packpub.download_ebooks(types, dir_path)
+        packtpub.download_ebooks(types, dir_path)
 
         if args.extras:
-            packpub.download_extras(dir_path)
+            packtpub.download_extras(dir_path)
 
         if args.archive:
             raise NotImplementedError('not implemented yet!')
 
         if args.upload is not None:
             upload = Upload(config, args.upload)
-            upload.run(packpub.info['paths'])
+            upload.run(packtpub.info['paths'])
 
         if upload is not None and upload is not SERVICE_DRIVE:
             log_warn('[-] skip store info: missing upload info')
         elif args.store is not None:
-            Database(config, args.store, packpub.info, upload.info).store()
+            Database(config, args.store, packtpub.info, upload.info).store()
 
     if args.notify:
         if upload is not None:
             upload_info = upload.info
 
-        Notify(config, packpub.info, upload_info, args.notify).run()
+        Notify(config, packtpub.info, upload_info, args.notify).run()
 
 def main():
     parser = argparse.ArgumentParser(
@@ -78,7 +77,7 @@ def main():
     args = parser.parse_args()
 
     now = datetime.datetime.now()
-    log_info('[*] {date} - Fetching today\'s books'.format(date=now.strftime("%Y-%m-%d %H:%M")))
+    log_info('[*] {date} - Fetching today\'s ebook'.format(date=now.strftime("%Y-%m-%d %H:%M")))
 
     packtpub = None
 
@@ -86,14 +85,14 @@ def main():
         dir_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + os.path.sep
 
         config = config_file(dir_path + args.config)
-        packpub = Packpub(config, args.dev)
+        packtpub = Packtpub(config, args.dev)
 
         #ip_address()
         log_info('[*] getting daily free ebook')
 
         try:
-            packpub.runDaily()
-            handleClaim(packpub, args, config, dir_path)
+            packtpub.runDaily()
+            handleClaim(packtpub, args, config, dir_path)
         except NoBookException as e:
             log_info('[*] ' + e.message)
         except Exception as e:
@@ -119,8 +118,8 @@ def main():
         elif lastNewsletterUrl != currentNewsletterUrl:
             log_info('[*] getting free ebook from newsletter')
             try:
-                packpub.runNewsletter(currentNewsletterUrl)
-                handleClaim(packpub, args, config, dir_path)
+                packtpub.runNewsletter(currentNewsletterUrl)
+                handleClaim(packtpub, args, config, dir_path)
 
                 with open(lastNewsletterUrlPath, 'w+') as f:
                     f.write(currentNewsletterUrl)

@@ -5,7 +5,7 @@ from utils import make_soup, wait, download_file
 from logs import *
 from noBookException import NoBookException
 
-class Packpub(object):
+class Packtpub(object):
     """
     """
 
