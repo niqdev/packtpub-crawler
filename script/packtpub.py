@@ -44,6 +44,10 @@ class Packpub(object):
         soup = make_soup(response)
 
         form = soup.find('form', {'id': 'packt-user-login-form'})
+
+        if form is None:
+            raise Exception('Could not find login form')
+
         self.info['form_build_id'] = form.find('input', attrs={'name': 'form_build_id'})['value']
         self.info['form_id'] = form.find('input', attrs={'name': 'form_id'})['value']
 
