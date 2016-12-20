@@ -5,7 +5,7 @@
 This crawler automates the following step:
 
 * access to private account
-* claim the daily free eBook
+* claim the daily free eBook and weekly Newsletter
 * parse title, description and useful information
 * download favorite format *.pdf .epub .mobi*
 * download source code and book cover
