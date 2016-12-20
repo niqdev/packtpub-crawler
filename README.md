@@ -295,6 +295,14 @@ The URL should point to a file containing only the URL (no semicolons, HTML, JSO
 You can also clone the [spreadsheet](https://docs.google.com/spreadsheets/d/1jN5gV45uVkE0EEF4Nb-yVNfIr3o8OoiVveUZJRMiLFw) to use your own Gmail account. Subscribe to the [newsletter](https://www.packtpub.com) (on the bottom of the page) and create a filter to tag your mails accordingly.
 
 
+### Troubleshooting
+-- ImportError: No module named paramiko
+Install paramiko with `sudo -H pip install paramiko --ignore-installed`
+
+-- Failed building wheel for cryptography
+Install missing dependencies as described [here](https://cryptography.io/en/latest/installation/#building-cryptography-on-windows)
+
+
 ### Development (only for spidering)
 Run a simple static server with
 ```
