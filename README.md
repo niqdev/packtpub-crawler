@@ -296,10 +296,12 @@ You can also clone the [spreadsheet](https://docs.google.com/spreadsheets/d/1jN5
 
 
 ### Troubleshooting
--- ImportError: No module named paramiko
+* ImportError: No module named paramiko
+
 Install paramiko with `sudo -H pip install paramiko --ignore-installed`
 
--- Failed building wheel for cryptography
+* Failed building wheel for cryptography
+
 Install missing dependencies as described [here](https://cryptography.io/en/latest/installation/#building-cryptography-on-windows)
 
 
