@@ -77,7 +77,7 @@ def main():
     args = parser.parse_args()
 
     now = datetime.datetime.now()
-    log_info('[*] {date} - fetching today\'s ebook'.format(date=now.strftime("%Y-%m-%d %H:%M")))
+    log_info('[*] {date} - fetching today\'s eBooks'.format(date=now.strftime("%Y-%m-%d %H:%M")))
 
     packtpub = None
 
@@ -88,7 +88,7 @@ def main():
         packtpub = Packtpub(config, args.dev)
 
         #ip_address()
-        log_info('[*] getting daily free ebook')
+        log_info('[*] getting daily free eBook')
 
         try:
             packtpub.runDaily()
@@ -112,11 +112,11 @@ def main():
         currentNewsletterUrl = requests.get(config.get('url', 'url.bookFromNewsletter')).text.strip()
 
         if currentNewsletterUrl == '':
-            log_info('[*] no free book from newsletter right now')
+            log_info('[*] no free eBook from newsletter right now')
         elif not currentNewsletterUrl.startswith('http'):
             log_warn('[-] invalid URL from newsletter: ' + currentNewsletterUrl)
         elif lastNewsletterUrl != currentNewsletterUrl:
-            log_info('[*] getting free ebook from newsletter')
+            log_info('[*] getting free eBook from newsletter')
             try:
                 packtpub.runNewsletter(currentNewsletterUrl)
                 handleClaim(packtpub, args, config, dir_path)
