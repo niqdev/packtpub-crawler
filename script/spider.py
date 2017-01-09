@@ -42,10 +42,12 @@ def handleClaim(packtpub, args, config, dir_path):
             upload = Upload(config, args.upload)
             upload.run(packtpub.info['paths'])
 
-        if upload is not None and upload is not SERVICE_DRIVE:
-            log_warn('[-] skip store info: missing upload info')
-        elif args.store is not None:
-            Database(config, args.store, packtpub.info, upload.info).store()
+        if args.store is not None:
+            if args.upload == SERVICE_DRIVE:
+                Database(config, args.store, packtpub.info, upload.info).store()
+            else:
+                log_warn('[-] skip store info: missing upload info')
+
 
     if args.notify:
         if upload is not None:
