@@ -8,6 +8,6 @@ sched = BlockingScheduler()
 def scheduled_job():
     print('New job: packtpub-crawler')
     shutil.rmtree('./ebooks', ignore_errors=True)
-    os.system('python script/spider.py --config config/prod.cfg --upload drive --store firebase --notify')
+    os.system('python script/spider.py --config config/prod.cfg --upload drive --store firebase --notify gmail')
 
 sched.start()
