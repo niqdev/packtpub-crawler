@@ -184,7 +184,6 @@ Value mappings:
 * value2: description
 * value3: image URL
 
-
 ### Join notification
 
 * Get the Join [Chrome extension](https://chrome.google.com/webstore/detail/join-by-joaoapps/flejfacjooompmliegamfbpjjdlhokhj) and/or [App](https://play.google.com/store/apps/details?id=com.joaomgcd.join)
@@ -249,7 +248,7 @@ More info about Heroku [Scheduler](https://devcenter.heroku.com/articles/schedul
 
 Build your image
 ```
-docker build -t niqdev/packtpub-crawler:2.2.2 .
+docker build -t niqdev/packtpub-crawler:2.2.3 .
 ```
 
 Run manually
@@ -257,7 +256,7 @@ Run manually
 docker run \
   --rm \
   --name my-packtpub-crawler \
-  niqdev/packtpub-crawler:2.2.2 \
+  niqdev/packtpub-crawler:2.2.3 \
   python script/spider.py --config config/prod.cfg
 ```
 
@@ -266,7 +265,7 @@ Run scheduled crawler in background
 docker run \
   --detach \
   --name my-packtpub-crawler \
-  niqdev/packtpub-crawler:2.2.2
+  niqdev/packtpub-crawler:2.2.3
 
 # useful commands
 docker exec -i -t my-packtpub-crawler bash
