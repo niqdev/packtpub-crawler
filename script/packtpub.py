@@ -79,7 +79,7 @@ class Packtpub(object):
         div_target = soup.find('div', {'id': 'deal-of-the-day'})
 
         if div_target is None:
-            raise NoBookException('no free ebook today')
+            raise NoBookException('no free eBook today')
 
         title = div_target.select('div.dotd-title > h2')[0].text.strip()
         self.info['title'] = title

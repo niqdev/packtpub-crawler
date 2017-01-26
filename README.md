@@ -5,7 +5,7 @@
 This crawler automates the following step:
 
 * access to private account
-* claim the daily free eBook
+* claim the daily free eBook and weekly Newsletter
 * parse title, description and useful information
 * download favorite format *.pdf .epub .mobi*
 * download source code and book cover
@@ -249,7 +249,7 @@ More info about Heroku [Scheduler](https://devcenter.heroku.com/articles/schedul
 
 Build your image
 ```
-docker build -t niqdev/packtpub-crawler:2.2.0 .
+docker build -t niqdev/packtpub-crawler:2.2.2 .
 ```
 
 Run manually
@@ -257,7 +257,7 @@ Run manually
 docker run \
   --rm \
   --name my-packtpub-crawler \
-  niqdev/packtpub-crawler:2.2.0 \
+  niqdev/packtpub-crawler:2.2.2 \
   python script/spider.py --config config/prod.cfg
 ```
 
@@ -266,7 +266,7 @@ Run scheduled crawler in background
 docker run \
   --detach \
   --name my-packtpub-crawler \
-  niqdev/packtpub-crawler:2.2.0
+  niqdev/packtpub-crawler:2.2.2
 
 # useful commands
 docker exec -i -t my-packtpub-crawler bash
@@ -299,6 +299,16 @@ url.bookFromNewsletter=https://goo.gl/kUciut
 The URL should point to a file containing only the URL (no semicolons, HTML, JSON, etc).
 
 You can also clone the [spreadsheet](https://docs.google.com/spreadsheets/d/1jN5gV45uVkE0EEF4Nb-yVNfIr3o8OoiVveUZJRMiLFw) to use your own Gmail account. Subscribe to the [newsletter](https://www.packtpub.com) (on the bottom of the page) and create a filter to tag your mails accordingly.
+
+
+### Troubleshooting
+* ImportError: No module named paramiko
+
+Install paramiko with `sudo -H pip install paramiko --ignore-installed`
+
+* Failed building wheel for cryptography
+
+Install missing dependencies as described [here](https://cryptography.io/en/latest/installation/#building-cryptography-on-windows)
 
 
 ### Development (only for spidering)

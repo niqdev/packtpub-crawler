@@ -42,10 +42,12 @@ def handleClaim(packtpub, args, config, dir_path):
             upload = Upload(config, args.upload)
             upload.run(packtpub.info['paths'])
 
-        if upload is not None and upload is not SERVICE_DRIVE:
-            log_warn('[-] skip store info: missing upload info')
-        elif args.store is not None:
-            Database(config, args.store, packtpub.info, upload.info).store()
+        if args.store is not None:
+            if args.upload == SERVICE_DRIVE:
+                Database(config, args.store, packtpub.info, upload.info).store()
+            else:
+                log_warn('[-] skip store info: missing upload info')
+
 
     if args.notify:
         if upload is not None:
@@ -57,7 +59,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='Download FREE eBook every day from www.packtpub.com',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        version='2.2.0')
+        version='2.2.2')
 
     parser.add_argument('-c', '--config', required=True, help='configuration file')
     parser.add_argument('-d', '--dev', action='store_true', help='only for development')
@@ -77,7 +79,7 @@ def main():
     args = parser.parse_args()
 
     now = datetime.datetime.now()
-    log_info('[*] {date} - fetching today\'s ebook'.format(date=now.strftime("%Y-%m-%d %H:%M")))
+    log_info('[*] {date} - fetching today\'s eBooks'.format(date=now.strftime("%Y-%m-%d %H:%M")))
 
     packtpub = None
 
@@ -88,7 +90,7 @@ def main():
         packtpub = Packtpub(config, args.dev)
 
         #ip_address()
-        log_info('[*] getting daily free ebook')
+        log_info('[*] getting daily free eBook')
 
         try:
             packtpub.runDaily()
@@ -112,11 +114,11 @@ def main():
         currentNewsletterUrl = requests.get(config.get('url', 'url.bookFromNewsletter')).text.strip()
 
         if currentNewsletterUrl == '':
-            log_info('[*] no free book from newsletter right now')
+            log_info('[*] no free eBook from newsletter right now')
         elif not currentNewsletterUrl.startswith('http'):
             log_warn('[-] invalid URL from newsletter: ' + currentNewsletterUrl)
         elif lastNewsletterUrl != currentNewsletterUrl:
-            log_info('[*] getting free ebook from newsletter')
+            log_info('[*] getting free eBook from newsletter')
             try:
                 packtpub.runNewsletter(currentNewsletterUrl)
                 handleClaim(packtpub, args, config, dir_path)
