@@ -168,6 +168,11 @@ python script/spider.py --config config/prod.cfg --notify gmail
 * [Create](https://ifttt.com/create) a new applet using the Maker service with the trigger "Receive a web request" and the event name "packtpub-crawler"
 * Change your IFTTT [key](https://internal-api.ifttt.com/maker) in the config file
 
+Values:
+* value1: title
+* value2: description
+* value3: image URL
+
 ```
 [ifttt]
 ifttt.event_name=packtpub-crawler
