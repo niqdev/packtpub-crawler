@@ -115,7 +115,7 @@ def main():
 
         if currentNewsletterUrl == '':
             log_info('[*] no free eBook from newsletter right now')
-        elif not currentNewsletterUrl.startswith('http'):
+        elif not currentNewsletterUrl.startswith('https://www.packtpub.com'):
             log_warn('[-] invalid URL from newsletter: ' + currentNewsletterUrl)
         elif lastNewsletterUrl != currentNewsletterUrl:
             log_info('[*] getting free eBook from newsletter')
