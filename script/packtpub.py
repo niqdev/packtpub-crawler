@@ -95,7 +95,7 @@ class Packtpub(object):
         div_target = soup.find('div', {'id': 'main-book'})
 
         urlWithTitle = div_target.select('div.promo-landing-book-picture a')[0]['href']
-        title = urlWithTitle.split('/')[4].replace('-', ' ').title()
+        title = urlWithTitle.split('/')[-1].replace('-', ' ').title()
         claimNode = div_target.select('div.promo-landing-book-info a')
 
         self.info['title'] = title
