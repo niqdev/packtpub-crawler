@@ -1,2 +1,0 @@
-class NoBookException(Exception):
-    pass
