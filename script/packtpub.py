@@ -4,6 +4,7 @@ from os.path import split, join
 from utils import make_soup, wait, download_file
 from logs import *
 from noBookException import NoBookException
+from alreadyClaimedException import AlreadyClaimedException
 
 class Packtpub(object):
     """
@@ -16,6 +17,9 @@ class Packtpub(object):
         self.__url_base = self.__config.get('url', 'url.base')
         self.__headers = self.__init_headers()
         self.__session = requests.Session()
+        self.resetInfo()
+
+    def resetInfo(self):
         self.info = {
             'paths': []
         }
@@ -121,6 +125,11 @@ class Packtpub(object):
 
         if div_target is None:
             raise Exception('Could not access claim page. This is most likely caused by invalid credentials')
+
+        errorMessage = soup.find(id='messages-container')
+
+        if errorMessage is not None and errorMessage.text.strip() == 'You have already claimed this promotion.':
+            raise AlreadyClaimedException()
 
         # only last one just claimed
         div_claimed_book = div_target.select('.product-line')[0]

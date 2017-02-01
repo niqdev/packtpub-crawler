@@ -11,6 +11,7 @@ from database import Database, DB_FIREBASE
 from logs import *
 from notify import Notify, SERVICE_GMAIL, SERVICE_IFTTT, SERVICE_JOIN
 from noBookException import NoBookException
+from alreadyClaimedException import AlreadyClaimedException
 
 def parse_types(args):
     if args.types is None:
@@ -120,12 +121,17 @@ def main():
         elif lastNewsletterUrl != currentNewsletterUrl:
             log_info('[*] getting free eBook from newsletter')
             try:
+                packtpub.resetInfo()
                 packtpub.runNewsletter(currentNewsletterUrl)
                 handleClaim(packtpub, args, config, dir_path)
 
                 with open(lastNewsletterUrlPath, 'w+') as f:
                     f.write(currentNewsletterUrl)
 
+            except AlreadyClaimedException as a:
+                log_info('[*] book was already claimed, skipping')
+                with open(lastNewsletterUrlPath, 'w+') as f:
+                    f.write(currentNewsletterUrl)
             except Exception as e:
                 log_debug(e)
                 if args.notify:
