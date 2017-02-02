@@ -60,7 +60,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='Download FREE eBook every day from www.packtpub.com',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        version='2.2.5')
+        version='2.2.6')
 
     parser.add_argument('-c', '--config', required=True, help='configuration file')
     parser.add_argument('-d', '--dev', action='store_true', help='only for development')
