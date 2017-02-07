@@ -26,7 +26,7 @@ class OneDrive(object):
             'name': file_path.split('/')[-1],
         }
         log_info('[+] new file upload on OneDrive:')
-        # log_dict(self.file_info)
+        log_info(self.info['name'])
 
     def __init_service(self):
         api_base_url = self.__config.get('onedrive', 'onedrive.api_base_url')
