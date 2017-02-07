@@ -9,7 +9,7 @@ This crawler automates the following step:
 * parse title, description and useful information
 * download favorite format *.pdf .epub .mobi*
 * download source code and book cover
-* upload files to Google Drive or via scp
+* upload files to Google Drive, OneDrive or via scp
 * store data on Firebase
 * notify via email, IFTTT or Join (on success and errors)
 * schedule daily job on Heroku or with Docker
@@ -36,6 +36,10 @@ python script/spider.py -c config/prod.cfg -e
 # download and then upload to Google Drive (given the download url anyone can download it)
 python script/spider.py -c config/prod.cfg -t epub --upload googledrive
 python script/spider.py --config config/prod.cfg --all --extras --upload googledrive
+
+# download and then upload to OneDrive (given the download url anyone can download it)
+python script/spider.py -c config/prod.cfg -t epub --upload onedrive
+python script/spider.py --config config/prod.cfg --all --extras --upload onedrive
 
 # download and notify: gmail|ifttt|join
 python script/spider.py -c config/prod.cfg --notify gmail
@@ -99,6 +103,44 @@ googledrive.upload_folder=FOLDER_ID
 ```
 
 Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/v3/web/quickstart/python), [example](https://github.com/googledrive/python-quickstart) and [permissions](https://developers.google.com/drive/v2/reference/permissions)
+
+### OneDrive
+
+From the documentation, OneDrive API requires OAuth2.0 for authentication, so to upload files you should:
+
+
+* Go to the [Microsoft Application Registration Portal](https://apps.dev.microsoft.com/?referrer=https%3A%2F%2Fdev.onedrive.com%2Fapp-registration.htm).
+* When prompted, sign in with your Microsoft account credentials.
+* Find **My applications** and click **Add an app**.
+* Enter **PacktpubDrive** as the app's name and click **Create application**.
+* Scroll to the bottom of the page and check the **Live SDK support** box.
+* Change your OneDrive credentials in the config file
+  * Copy your **Application Id** into the config file to **onedrive.client_id**
+  * Click **Generate New Password** and copy the password shown into the config file to **onedrive.client_secret**
+  * Click **Add Platform** and select **Web**
+  * Enter **http://localhost:8080/** as the **Redirect URL**
+  * Click **Save** at the bottom of the page
+
+```
+[onedrive]
+...
+onedrive.client_id=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+onedrive.client_secret=XxXxXxXxXxXxXxXxXxXxXxX
+```
+
+Now you should be able to upload your eBook to OneDrive
+```
+python script/spider.py --config config/prod.cfg --upload onedrive
+```
+
+Only the first time you will be prompted to login in a browser which has javascript enabled (no text-based browser) to generate `config/session.onedrive.pickle`.
+```
+[onedrive]
+...
+onedrive.folder=packtpub
+```
+
+Documentation: [Registration](https://dev.onedrive.com/app-registration.htm), [Python API](https://github.com/OneDrive/onedrive-sdk-python)
 
 ### Scp
 
