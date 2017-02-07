@@ -6,7 +6,7 @@ import requests
 import os
 from utils import ip_address, config_file
 from packtpub import Packtpub
-from upload import Upload, SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP
+from upload import Upload, SERVICE_GOOGLE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP
 from database import Database, DB_FIREBASE
 from logs import *
 from notify import Notify, SERVICE_GMAIL, SERVICE_IFTTT, SERVICE_JOIN
@@ -44,7 +44,7 @@ def handleClaim(packtpub, args, config, dir_path):
             upload.run(packtpub.info['paths'])
 
         if args.store is not None:
-            if args.upload == SERVICE_DRIVE:
+            if args.upload == SERVICE_GOOGLE_DRIVE:
                 Database(config, args.store, packtpub.info, upload.info).store()
             else:
                 log_warn('[-] skip store info: missing upload info')
@@ -65,7 +65,7 @@ def main():
     parser.add_argument('-c', '--config', required=True, help='configuration file')
     parser.add_argument('-d', '--dev', action='store_true', help='only for development')
     parser.add_argument('-e', '--extras', action='store_true', help='download source code (if exists) and book cover')
-    parser.add_argument('-u', '--upload', choices=[SERVICE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP], help='upload to cloud')
+    parser.add_argument('-u', '--upload', choices=[SERVICE_GOOGLE_DRIVE, SERVICE_DROPBOX, SERVICE_SCP], help='upload to cloud')
     parser.add_argument('-a', '--archive', action='store_true', help='compress all file')
     parser.add_argument('-n', '--notify', choices=[SERVICE_GMAIL, SERVICE_IFTTT, SERVICE_JOIN], help='notify after claim/download')
     parser.add_argument('-s', '--store', choices=[DB_FIREBASE], help='store info')
