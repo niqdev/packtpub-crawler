@@ -1,8 +1,10 @@
 from googledrive import GoogleDrive
+from onedrive import OneDrive
 from scpUpload import ScpUpload
 from logs import *
 
 SERVICE_GOOGLE_DRIVE = 'googledrive'
+SERVICE_ONEDRIVE = 'onedrive'
 SERVICE_DROPBOX = 'DROPBOX'
 SERVICE_SCP = 'scp'
 
@@ -18,6 +20,8 @@ class Upload(object):
         }
         if service_type == SERVICE_GOOGLE_DRIVE:
             self.service = GoogleDrive(config)
+        elif service_type == SERVICE_ONEDRIVE:
+            self.service = OneDrive(config)
         elif service_type == SERVICE_DROPBOX:
             raise NotImplementedError('not implemented yet!')
         elif service_type == SERVICE_SCP:
