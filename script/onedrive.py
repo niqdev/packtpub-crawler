@@ -1,5 +1,6 @@
 from os.path import exists
 
+import magic
 import onedrivesdk
 from onedrivesdk.helpers import GetAuthCodeServer
 
@@ -24,6 +25,7 @@ class OneDrive(object):
         self.info = {
             'path': file_path,
             'name': file_path.split('/')[-1],
+            'mime_type': magic.from_file(file_path, mime=True),
         }
         log_info('[+] new file upload on OneDrive:')
         log_info(self.info['name'])
