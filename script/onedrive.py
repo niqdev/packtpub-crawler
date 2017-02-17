@@ -101,8 +101,19 @@ class OneDrive(object):
 
     def __insert_file(self):
         print '[+] uploading file...'
-        item = self.__onedrive_service.item(drive='me', id=self.__get_folder())
-        file = item.children[self.info['name']].upload(self.info['path'])
+        tries = 5
+        while tries > 0:
+            try:
+                tries -= 1
+                item = self.__onedrive_service.item(drive='me', id=self.__get_folder())
+                file = item.children[self.info['name']].upload(self.info['path'])
+                tries = 0
+            except:
+                print '[x] upload failed'
+                if tries <= 0:
+                    pass
+                else:
+                    print '[x] retrying ...'
 
         self.info['id'] = file.id
         self.info['download_url'] = file.web_url
