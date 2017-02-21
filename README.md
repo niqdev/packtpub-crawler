@@ -9,15 +9,15 @@ This crawler automates the following step:
 * parse title, description and useful information
 * download favorite format *.pdf .epub .mobi*
 * download source code and book cover
-* upload files to Google Drive or via scp
+* upload files to Google Drive, OneDrive or via scp
 * store data on Firebase
 * notify via email, IFTTT or Join (on success and errors)
 * schedule daily job on Heroku or with Docker
 
 ### Default command
 ```bash
-# upload pdf to drive, store data and notify via email
-python script/spider.py -c config/prod.cfg -u drive -s firebase -n gmail
+# upload pdf to googledrive, store data and notify via email
+python script/spider.py -c config/prod.cfg -u googledrive -s firebase -n gmail
 ```
 
 ### Other options
@@ -33,9 +33,13 @@ python script/spider.py --config config/prod.cfg -t pdf --extras
 # equivalent (default is pdf)
 python script/spider.py -c config/prod.cfg -e
 
-# download and then upload to Drive (given the download url anyone can download it)
-python script/spider.py -c config/prod.cfg -t epub --upload drive
-python script/spider.py --config config/prod.cfg --all --extras --upload drive
+# download and then upload to Google Drive (given the download url anyone can download it)
+python script/spider.py -c config/prod.cfg -t epub --upload googledrive
+python script/spider.py --config config/prod.cfg --all --extras --upload googledrive
+
+# download and then upload to OneDrive (given the download url anyone can download it)
+python script/spider.py -c config/prod.cfg -t epub --upload onedrive
+python script/spider.py --config config/prod.cfg --all --extras --upload onedrive
 
 # download and notify: gmail|ifttt|join
 python script/spider.py -c config/prod.cfg --notify gmail
@@ -64,41 +68,79 @@ Now you should be able to claim and download your first eBook
 python script/spider.py --config config/prod.cfg
 ```
 
-### Drive
+### Google Drive
 
-From the documentation, Drive API requires OAuth2.0 for authentication, so to upload files you should:
+From the documentation, Google Drive API requires OAuth2.0 for authentication, so to upload files you should:
 
-* Go to [Google APIs Console](https://code.google.com/apis/console) and create a new [Drive](https://console.developers.google.com/apis/api/drive/overview) project named **PacktpubDrive**
+* Go to [Google APIs Console](https://code.google.com/apis/console) and create a new [Google Drive](https://console.developers.google.com/apis/api/drive/overview) project named **PacktpubDrive**
 * On *API manager > Overview* menu
   * Enable Google Drive API
 * On *API manager > Credentials* menu
   * In *OAuth consent screen* tab set **PacktpubDrive** as the product name shown to users
   * In *Credentials* tab create credentials of type *OAuth client ID* and choose Application type *Other* named **PacktpubDriveCredentials**
 * Click *Download JSON* and save the file `config/client_secrets.json`
-* Change your Drive credentials in the config file
+* Change your Google Drive credentials in the config file
 
 ```
-[drive]
+[googledrive]
 ...
-drive.client_secrets=config/client_secrets.json
-drive.gmail=GOOGLE_DRIVE@gmail.com
+googledrive.client_secrets=config/client_secrets.json
+googledrive.gmail=GOOGLE_DRIVE@gmail.com
 ```
 
-Now you should be able to upload your eBook to Drive
+Now you should be able to upload your eBook to Google Drive
 ```
-python script/spider.py --config config/prod.cfg --upload drive
+python script/spider.py --config config/prod.cfg --upload googledrive
 ```
 
 Only the first time you will be prompted to login in a browser which has javascript enabled (no text-based browser) to generate `config/auth_token.json`.
 You should also copy and paste in the config the *FOLDER_ID*, otherwise every time a new folder with the same name will be created.
 ```
-[drive]
+[googledrive]
 ...
-drive.default_folder=packtpub
-drive.upload_folder=FOLDER_ID
+googledrive.default_folder=packtpub
+googledrive.upload_folder=FOLDER_ID
 ```
 
 Documentation: [OAuth](https://developers.google.com/api-client-library/python/guide/aaa_oauth), [Quickstart](https://developers.google.com/drive/v3/web/quickstart/python), [example](https://github.com/googledrive/python-quickstart) and [permissions](https://developers.google.com/drive/v2/reference/permissions)
+
+### OneDrive
+
+From the documentation, OneDrive API requires OAuth2.0 for authentication, so to upload files you should:
+
+
+* Go to the [Microsoft Application Registration Portal](https://apps.dev.microsoft.com/?referrer=https%3A%2F%2Fdev.onedrive.com%2Fapp-registration.htm).
+* When prompted, sign in with your Microsoft account credentials.
+* Find **My applications** and click **Add an app**.
+* Enter **PacktpubDrive** as the app's name and click **Create application**.
+* Scroll to the bottom of the page and check the **Live SDK support** box.
+* Change your OneDrive credentials in the config file
+  * Copy your **Application Id** into the config file to **onedrive.client_id**
+  * Click **Generate New Password** and copy the password shown into the config file to **onedrive.client_secret**
+  * Click **Add Platform** and select **Web**
+  * Enter **http://localhost:8080/** as the **Redirect URL**
+  * Click **Save** at the bottom of the page
+
+```
+[onedrive]
+...
+onedrive.client_id=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+onedrive.client_secret=XxXxXxXxXxXxXxXxXxXxXxX
+```
+
+Now you should be able to upload your eBook to OneDrive
+```
+python script/spider.py --config config/prod.cfg --upload onedrive
+```
+
+Only the first time you will be prompted to login in a browser which has javascript enabled (no text-based browser) to generate `config/session.onedrive.pickle`.
+```
+[onedrive]
+...
+onedrive.folder=packtpub
+```
+
+Documentation: [Registration](https://dev.onedrive.com/app-registration.htm), [Python API](https://github.com/OneDrive/onedrive-sdk-python)
 
 ### Scp
 
@@ -136,7 +178,7 @@ firebase.url=https://PROJECT_NAME.firebaseio.com
 
 Now you should be able to store your eBook details on Firebase
 ```
-python script/spider.py --config config/prod.cfg --upload drive --store firebase
+python script/spider.py --config config/prod.cfg --upload googledrive --store firebase
 ```
 
 ### Gmail notification
