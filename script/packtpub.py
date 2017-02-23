@@ -171,7 +171,7 @@ class Packtpub(object):
         self.__GET_claim()
         wait(self.__delay, self.__dev)
 
-    def download_ebooks(self, types, base_path):
+    def download_ebooks(self, types):
         """
         """
         downloads_info = [dict(type=type,
@@ -185,15 +185,15 @@ class Packtpub(object):
             folder_name = self.info['title'].encode('ascii', 'ignore').replace(' ', '_') + \
                           self.info['author'].encode('ascii', 'ignore').replace(' ', '_')
 
-            directory = base_path + join(self.__config.get('path', 'path.ebooks'), folder_name)
+            directory = join(self.__config.get('path', 'path.ebooks'), folder_name)
         else:
-            directory = base_path + self.__config.get('path', 'path.ebooks')
+            directory = self.__config.get('path', 'path.ebooks')
 
         for download in downloads_info:
             self.info['paths'].append(
                 download_file(self.__session, download['url'], directory, download['filename'], self.__headers))
 
-    def download_extras(self, base_path):
+    def download_extras(self):
         """
         """
 
@@ -203,9 +203,9 @@ class Packtpub(object):
             folder_name = self.info['title'].encode('ascii', 'ignore').replace(' ', '_') + \
                           self.info['author'].encode('ascii', 'ignore').replace(' ', '_')
 
-            directory = base_path + join(self.__config.get('path', 'path.ebooks'), folder_name, self.__config.get('path', 'path.extras'))
+            directory = join(self.__config.get('path', 'path.ebooks'), folder_name, self.__config.get('path', 'path.extras'))
         else:
-            directory = base_path + self.__config.get('path', 'path.extras')
+            directory = self.__config.get('path', 'path.extras')
 
         url_image = self.info['url_image']
         filename = self.info['filename'] + '_' + split(url_image)[1]
