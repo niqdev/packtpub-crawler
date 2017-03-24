@@ -244,6 +244,19 @@ Now you should be able to trigger the event
 python script/spider.py --config config/prod.cfg --notify join
 ```
 
+### Pushover notification
+
+* Get your [USER_KEY](https://pushover.net/)
+* Create a [new application](https://pushover.net/apps/build)
+* (Optional) Add an [icon](https://pushover.net/icons/9aqpv697p9g6wzo.png)
+* Change your pushover credentials in the config file
+
+```
+[pushover]
+pushover.user_key=PUSHOVER_USER_KEY
+pushover.api_key=PUSHOVER_API_KEY
+```
+
 ### Heroku
 
 Create a new branch
