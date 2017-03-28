@@ -280,7 +280,7 @@ Create, config and deploy the scheduler
 ```bash
 heroku login
 # create a new app
-heroku create APP_NAME
+heroku create APP_NAME --region eu
 # or if you already have an existing app
 heroku git:remote -a APP_NAME
 
