@@ -13,4 +13,4 @@ paramiko==2.0.2
 cryptography==1.6
 scp==0.10.2
 onedrivesdk==1.1.8
-
+python-pushover==0.3
