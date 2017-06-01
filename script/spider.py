@@ -101,8 +101,7 @@ def main():
         except Exception as e:
             log_debug(e)
             if args.notify:
-                Notify(config, None, None, args.notify).sendError(e, 'daily')
-            return
+                Notify(config, packtpub.info, None, args.notify).sendError(e, 'daily')
 
         lastNewsletterUrlPath = dir_path + 'config/lastNewsletterUrl'
         lastNewsletterUrl = None
@@ -135,7 +134,7 @@ def main():
             except Exception as e:
                 log_debug(e)
                 if args.notify:
-                    Notify(config, None, None, args.notify).sendError(e, 'newsletter')
+                    Notify(config, packtpub.info, None, args.notify).sendError(e, 'newsletter')
         else:
             log_info('[*] already got latest ebook from newsletter, skipping')
 

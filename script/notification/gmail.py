@@ -72,9 +72,11 @@ class Gmail(object):
           <head></head>
           <body>
             <div>{title}</div>
+            <div>Download manually: <a href="{url}">{url}</a></div>
             <div>{description}</div>
             """.format(title=text,
-                       description=repr(exception))
+                       description=repr(exception),
+                       url=self.__packpub_info['landingPageUrl'])
 
         html += """\
             <div>Powered by <a href="https://github.com/niqdev/packtpub-crawler">packtpub-crawler</a></div>

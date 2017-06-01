@@ -22,11 +22,12 @@ class Join(object):
         log_success('[+] notification sent to Join')
 
     def sendError(self, exception, source):
-        url = "https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey={apiKey}&deviceId={deviceIds}&title={title}&text={description}".format(
+        url = "https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey={apiKey}&deviceId={deviceIds}&title={title}&text={description}&url={url}".format(
             apiKey=self.__config.get('join', 'join.api_key'),
             deviceIds=self.__config.get('join', 'join.device_ids'),
-            title='packtpub-crawler {source}: Could not download ebook'.format(source=source),
-            description=repr(exception)
+            title='packtpub-crawler {source}: Could not download ebook: {title}'.format(source=source, title=self.__packpub_info['title']),
+            description=repr(exception),
+            url=self.__packpub_info['landingPageUrl']
         )
 
         r = requests.post(url)
