@@ -286,7 +286,7 @@ More info about Heroku [Scheduler](https://devcenter.heroku.com/articles/schedul
 
 Build your image
 ```
-docker build -t niqdev/packtpub-crawler:2.4.1 .
+docker build -t niqdev/packtpub-crawler:2.4.0 .
 ```
 
 Run manually
@@ -294,7 +294,7 @@ Run manually
 docker run \
   --rm \
   --name my-packtpub-crawler \
-  niqdev/packtpub-crawler:2.4.1 \
+  niqdev/packtpub-crawler:2.4.0 \
   python script/spider.py --config config/prod.cfg
 ```
 
@@ -303,7 +303,7 @@ Run scheduled crawler in background
 docker run \
   --detach \
   --name my-packtpub-crawler \
-  niqdev/packtpub-crawler:2.4.1
+  niqdev/packtpub-crawler:2.4.0
 
 # useful commands
 docker exec -i -t my-packtpub-crawler bash
