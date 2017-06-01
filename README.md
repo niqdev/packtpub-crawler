@@ -37,10 +37,6 @@ python script/spider.py -c config/prod.cfg -e
 python script/spider.py -c config/prod.cfg -t epub --upload googledrive
 python script/spider.py --config config/prod.cfg --all --extras --upload googledrive
 
-# download and then upload to OneDrive (given the download url anyone can download it)
-python script/spider.py -c config/prod.cfg -t epub --upload onedrive
-python script/spider.py --config config/prod.cfg --all --extras --upload onedrive
-
 # download and notify: gmail|ifttt|join
 python script/spider.py -c config/prod.cfg --notify gmail
 
