@@ -22,6 +22,6 @@ class Ifttt(object):
 
     def sendError(self, exception, source):
         title = "packtpub-crawler [{source}]: Could not download ebook".format(source=source)
-        r = requests.post(self.__url, data = {'value1':title, 'value2':repr(exception)})
+        r = requests.post(self.__url, data = {'value1':title, 'value2':repr(exception), 'value3':self.__packpub_info['landingPageUrl']})
 
         log_success('[+] error notification sent to IFTTT')

@@ -148,6 +148,8 @@ class Packtpub(object):
         else:
             loginUrl = self.__url_base + self.__config.get('url', 'url.login')
 
+        self.info['landingPageUrl'] = loginUrl
+
         soup = self.__GET_login(loginUrl)
         wait(self.__delay, self.__dev)
 
@@ -166,6 +168,8 @@ class Packtpub(object):
         """
 
         soup = self.__GET_login(currentNewsletterUrl)
+        self.info['landingPageUrl'] = currentNewsletterUrl
+
         self.__parseNewsletterBookInfo(soup)
         wait(self.__delay, self.__dev)
         self.__GET_claim()

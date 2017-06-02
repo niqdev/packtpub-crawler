@@ -224,7 +224,7 @@ python script/spider.py --config config/prod.cfg --notify ifttt
 Value mappings:
 * value1: title
 * value2: description
-* value3: image URL
+* value3: landing page URL
 
 ### Join notification
 
