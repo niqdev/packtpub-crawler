@@ -90,7 +90,7 @@ class Packtpub(object):
         self.info['filename'] = title.encode('ascii', 'ignore').replace(' ', '_')
         self.info['description'] = div_target.select('div.dotd-main-book-summary > div')[2].text.strip()
         self.info['url_image'] = 'https:' + div_target.select('div.dotd-main-book-image img')[0]['data-original']
-        self.info['url_claim'] = self.__url_base + div_target.select('a.twelve-days-claim')[0]['href']
+        self.info['url_claim'] = self.__url_base + div_target.select('form')[0]['action']
         # remove useless info
         self.info.pop('form_build_id', None)
         self.info.pop('form_id', None)
@@ -117,8 +117,15 @@ class Packtpub(object):
         else:
             url = self.info['url_claim']
 
-        response = self.__session.get(url, headers=self.__headers)
-        self.__log_response(response, 'GET', self.__dev)
+        # FIXME retrieve recaptcha-token - can be used only once
+        data = {}
+        data['g-recaptcha-response'] = 'YOUR_RECAPTCHA_TOKEN'
+        print data
+        print url
+        response = self.__session.post(url, headers=self.__headers, data=data)
+        self.__log_response(response, 'POST', True)
+        url_account = self.__url_base + self.__config.get('url', 'url.account')
+        response = self.__session.get(url_account, headers=self.__headers)
 
         soup = make_soup(response)
         div_target = soup.find('div', {'id': 'product-account-list'})
