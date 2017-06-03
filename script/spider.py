@@ -4,6 +4,7 @@ import argparse
 import datetime
 import requests
 import os
+import sys
 from utils import ip_address, config_file
 from packtpub import Packtpub
 from upload import Upload, SERVICE_GOOGLE_DRIVE, SERVICE_ONEDRIVE, SERVICE_DROPBOX, SERVICE_SCP
@@ -31,10 +32,10 @@ def handleClaim(packtpub, args, config, dir_path):
     if not args.claimOnly:
         types = parse_types(args)
 
-        packtpub.download_ebooks(types, dir_path)
+        packtpub.download_ebooks(types)
 
         if args.extras:
-            packtpub.download_extras(dir_path)
+            packtpub.download_extras()
 
         if args.archive:
             raise NotImplementedError('not implemented yet!')
@@ -93,9 +94,14 @@ def main():
         #ip_address()
         log_info('[*] getting daily free eBook')
 
+        downloadPath = config.get('path', 'path.ebooks')
+
+        if not dir_path.startswith('/'):
+            downloadPath = dir_path + downloadPath
+
         try:
             packtpub.runDaily()
-            handleClaim(packtpub, args, config, dir_path)
+            handleClaim(packtpub, args, config, downloadPath)
         except NoBookException as e:
             log_info('[*] ' + e.message)
         except Exception as e:
@@ -122,7 +128,7 @@ def main():
             try:
                 packtpub.resetInfo()
                 packtpub.runNewsletter(currentNewsletterUrl)
-                handleClaim(packtpub, args, config, dir_path)
+                handleClaim(packtpub, args, config, downloadPath)
 
                 with open(lastNewsletterUrlPath, 'w+') as f:
                     f.write(currentNewsletterUrl)
