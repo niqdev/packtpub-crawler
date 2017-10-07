@@ -5,6 +5,7 @@
 *.iml
 
 *.pyc
+env/
 
 config/prod.cfg
 config/client_secrets.json

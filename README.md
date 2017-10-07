@@ -54,7 +54,7 @@ Before you start you should
 
 * Verify that your currently installed version of Python is **2.x** with `python --version`
 * Clone the repository `git clone https://github.com/niqdev/packtpub-crawler.git`
-* Install all the dependencies (you might need *sudo* privilege) `pip install -r requirements.txt`
+* Install all the dependencies `pip install -r requirements.txt` (see also [virtualenv](https://github.com/niqdev/packtpub-crawler#virtualenv))
 * Create a [config](https://github.com/niqdev/packtpub-crawler/blob/master/config/prod_example.cfg) file `cp config/prod_example.cfg config/prod.cfg`
 * Change your Packtpub credentials in the config file
 ```
@@ -401,6 +401,31 @@ Install paramiko with `sudo -H pip install paramiko --ignore-installed`
 
 Install missing dependencies as described [here](https://cryptography.io/en/latest/installation/#building-cryptography-on-windows)
 
+### virtualenv
+
+```
+# install pip + setuptools
+curl https://bootstrap.pypa.io/get-pip.py | python -
+
+# upgrade pip
+pip install -U pip
+
+# install virtualenv globally 
+sudo pip install virtualenv
+
+# create virtualenv
+virtualenv env
+
+# activate virtualenv
+source env/bin/activate
+
+# verify virtualenv
+which python
+python --version
+
+# deactivate virtualenv
+deactivate
+```
 
 ### Development (only for spidering)
 Run a simple static server with
