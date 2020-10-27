@@ -10,7 +10,7 @@ termcolor==1.1.0
 urllib3==1.15.1
 python-firebase==1.2
 paramiko==2.0.2
-cryptography==1.6
+cryptography==3.2
 scp==0.10.2
 onedrivesdk==1.1.8
 python-pushover==0.3
