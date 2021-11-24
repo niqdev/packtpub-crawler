@@ -22,7 +22,7 @@ python script/spider.py -c config/prod.cfg -u googledrive -s firebase -n gmail
 
 ### Other options
 ```bash
-# download all format
+# download all formats
 python script/spider.py --config config/prod.cfg --all
 
 # download only one format: pdf|epub|mobi
