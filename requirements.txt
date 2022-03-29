@@ -9,7 +9,7 @@ requests==2.10.0
 termcolor==1.1.0
 urllib3==1.15.1
 python-firebase==1.2
-paramiko==2.0.2
+paramiko==2.10.1
 cryptography==1.6
 scp==0.10.2
 onedrivesdk==1.1.8
